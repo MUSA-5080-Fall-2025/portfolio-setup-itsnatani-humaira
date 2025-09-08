@@ -3,7 +3,11 @@ project:
   output-dir: docs
 
 website:
+<<<<<<< HEAD
   title: "Itsnatani Humaira - MUSA 5080 Portfolio"
+=======
+  title: "Itsnatani Anaqami - MUSA 5080 Portfolio"
+>>>>>>> b234db52832f2a86a87930e6275fee621a141cbd
   navbar:
     left:
       - href: index.qmd
