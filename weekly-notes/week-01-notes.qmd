@@ -6,9 +6,13 @@ date: "2025-09-08"
 ## Key Concepts Learned
 - GitHub
 *Git* is a collaboration tool for teams. It tracks changes for our code projects.
-*GitHub* 
-- Quarto
-- R and dplyr Review
+*GitHub* is a cloud hosting for Git repositories. It backs up work in the cloud. Through GitHub, we can share project with other people and collaborate on code projects.
+- Terminology
+*Repository* is the folder that contains the project files
+*Commit* is snapshot of our work at a point in time
+*Push* Send changes to GitHub cloud
+*Pull* Get latest changes from GitHub cloud
+- Quarto is a publishing system that combines code, text, and output into professional documents.
 
 ## Coding Techniques
 - [New R functions or approaches]
