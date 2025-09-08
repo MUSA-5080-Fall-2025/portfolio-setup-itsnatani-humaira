@@ -15,8 +15,8 @@ Advanced spatial analysis and data science for urban planning and public policy.
 - **Final Project:** Capstone modeling challenge
 
 ## About Me
-[Students will customize this section]
+Hi, my name is Natan! I'm a second year Master of City Planning student at the Stuart Weitzman School of Design, University of Pennsylvania.
 
 ## Contact
-- Email: [your.email@upenn.edu]
-- GitHub: [@your-username]
+- Email: itsnatan@upenn.edu
+- GitHub: @itsnatani-humaira

@@ -4,7 +4,8 @@ date: "2025-09-08"
 ---
 
 ## Key Concepts Learned
-- [List main concepts from lecture]
+- GitHub
+- Quarto
 - [Technical skills covered]
 
 ## Coding Techniques
