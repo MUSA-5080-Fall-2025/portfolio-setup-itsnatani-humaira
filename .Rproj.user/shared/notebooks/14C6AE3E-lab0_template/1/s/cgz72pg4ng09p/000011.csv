@@ -1,0 +1,15 @@
+"0","# Find all Toyota cars
+filter(car_data, Model == Toyota)
+"
+"1","[1m[33mError[39m in `filter()`:[22m
+[38;5;232m[36mℹ[38;5;232m In argument: `Model == Toyota`.[39m
+[1mCaused by error:[22m
+[33m![39m object 'Toyota' not found
+Backtrace:
+[90m 1. [39m[1mdplyr[22m::filter(car_data, Model == Toyota)
+[90m 2. [39m[1m[94mdplyr:::filter.data.frame([39m[22mcar_data, Model == Toyota[1m[94m)[39m[22m
+[90m 3. [39mdplyr:::filter_rows(.data, dots, by)
+[90m 4. [39mdplyr:::filter_eval(...)
+[90m 6. [39mmask$eval_all_filter(dots, env_filter)
+[90m 7. [39m[1mdplyr[22m (local) eval()
+"

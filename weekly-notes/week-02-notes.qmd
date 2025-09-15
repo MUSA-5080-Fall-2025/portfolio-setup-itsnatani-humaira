@@ -1,0 +1,105 @@
+---
+title: "Week 2 Notes - Course Introduction"
+date: "2025-09-15"
+---
+
+## Key Concepts Learned
+Part 1: Algorithmic Decision Making
+
+Key Terms
+→ Data Science: Computer science/engineering focus on algorithm and methods
+→ Data Analytics: Application of Data Science methods to other disciplines
+→ Machine Learning: Algorithm for classification and prediction that learn from data
+→ AI: Algorithms that adjust and improve across iterations (neural networks, etc)
+
+Government data collection history:
+Civic registration system
+Census Data
+Administrative records
+Operations Research (Post-WWII)
+What’s new in data collection:
+More data that are official and accidental
+Accidental → we turned on our location when updating on instagram
+Focus on prediction rather than explanation
+Harder to interpret and explain
+
+Algorithmic decision making is especially appealing because it promises:
+Efficiency - process more cases faster
+Consistency - same rules applied to everyone
+Objectivity - removes human bias
+Cost savings - fewer staff needed
+
+Data Analytics is subjective because every step involves human choices. For example during Data cleaning decisions; Data coding or classification; Data collection - use of imperfect proxies; How you interpret results; What variables you put in the model. These choices embed human values and biases.
+
+Part 2: Active Learning Exercise
+
+Small group challenge scenario: School enrollment assignment
+Proxy: zipcodes stand in for "assignment-distance"
+Blindspots: wealthy/lower economic class neighborhood tend to be grouped together
+Harm + guiderail: low-income neighborhood get low quality education -> we'd add more demographic data into consideration like racial data and income data into account when assigning school rather than just distance to achieve racial and economic diversity in certain neighborhood.
+
+Part 3: Census Data Foundations
+
+- The *Decennial Census* counts every person in the U.S. every 10 years to determine population counts for congressional apportionment and redistricting, asking basic questions about age, sex, and race. 
+- In contrast, the *American Community Survey (ACS)* is a continuous, year-round survey sent to a sample of addresses that replaces the decennial "long form" by gathering detailed, timely socioeconomic, housing, and transportation data for communities to inform planning and funding for services and programs.
+- ACS Data
+*1-Year Estimates (areas > 65,000 people)*
+Most current data, smallest sample 
+
+*5-Year Estimates (all areas including census tracts)*
+Most reliable data, largest sample What you’ll use most often
+
+Census Geographic Hierarchy : Nation>Regions>States>Counties>Census Tracts (1,500-8,000 people)>Block Groups (600-3,000 people)>Blocks (~85 people, Decennial only)
+
+Most policy analysis happens at:
+County level - state and regional planning
+Census tract level - neighborhood analysis
+Block group level - very local analysis (tempting, but big MOEs)
+
+Accessing Census Data in R
+Traditional approach: Download CSV files from Census website
+Modern approach: Use R packages to access data directly --> use the *tidycensus* package
+
+Benefits of programmatic access:
+
+Always get latest data
+Reproducible workflows
+Automatic geographic boundaries
+Built-in error handling 
+
+When New Data Comes Out
+- ACS 1-year estimates: Released in September (previous year’s data)
+- ACS 5-year estimates: Released in December
+- Decennial Census: Released on rolling schedule over 2-3 years
+
+Helpful Data Sources
+
+TIGER/Line Files
+  - Geographic boundaries (shapefiles)
+  - Census tracts, counties, states
+  - Now released as shapefiles (easier to use!)
+
+Historical Data Sources:
+  - NHGIS (nhgis.org) - Historical census data
+  - Neighborhood Change Database
+  - Longitudinal Tract Database - Track changes over time
+
+Part 4: Census Data with R
+
+total_pop table --> B01003_001
+median_income table --> B19013_001
+
+## Coding Techniques
+- [New R functions or approaches]
+- [Quarto features learned]
+
+## Questions & Challenges
+- [What I didn't fully understand]
+- [Areas needing more practice]
+
+## Connections to Policy
+- [How this week's content applies to real policy work]
+
+## Reflection
+- [What was most interesting]
+- [How I'll apply this knowledge]
