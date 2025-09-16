@@ -176,7 +176,7 @@ car_data_20k_35k <- car_data %>%
 
 # Find diesel cars less than 10 years old
 car_data_diesel_less10y <- car_data %>%
-  filter(`Fuel type` == "Diesel" & `Year of manufacture` >= 2015)
+  filter(`Fuel type` == "Diesel" & `Year` >= 2015)
 ```
 
 **Question:** How many diesel cars are less than 10 years old?
