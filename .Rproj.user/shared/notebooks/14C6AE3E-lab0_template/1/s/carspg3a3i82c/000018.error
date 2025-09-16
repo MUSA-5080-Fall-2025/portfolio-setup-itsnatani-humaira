@@ -1,0 +1,1 @@
+{"frames":[{"func":"car_df %>% select(-`Engine size`)","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0},{"func":"select(., -`Engine size`)","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error: object 'car_df' not found\n"}

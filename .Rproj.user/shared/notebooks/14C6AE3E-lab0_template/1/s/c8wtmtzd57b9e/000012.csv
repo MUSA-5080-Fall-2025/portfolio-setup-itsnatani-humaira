@@ -1,0 +1,22 @@
+"0","# Use glimpse() to see the data structure
+glimpse(car_data)
+"
+"1","Rows: 50,000"
+"1",""
+"1","
+"
+"1","Columns: 8"
+"1",""
+"1","
+"
+"1","$ Manufacturer          [3m[38;5;246m<chr>[39m[23m ""Ford"", ""Porsche"", ""Ford"", ""Toyota"", ""VW"", ""Ford"", ""Ford"", ""Toyota"", ""VW"", …
+$ Model                 [3m[38;5;246m<chr>[39m[23m ""Fiesta"", ""718 Cayman"", ""Mondeo"", ""RAV4"", ""Polo"", ""Focus"", ""Mondeo"", ""Prius…
+$ `Engine size`         [3m[38;5;246m<dbl>[39m[23m 1.0, 4.0, 1.6, 1.8, 1.0, 1.4, 1.8, 1.4, 1.2, 2.0, 2.0, 2.0, 1.2, 2.2, 1.4, …
+$ `Fuel type`           [3m[38;5;246m<chr>[39m[23m ""Petrol"", ""Petrol"", ""Diesel"", ""Hybrid"", ""Petrol"", ""Petrol"", ""Diesel"", ""Hybr…
+$ `Year of manufacture` [3m[38;5;246m<dbl>[39m[23m 2002, 2016, 2014, 1988, 2006, 2018, 2010, 2015, 2012, 1992, 2014, 1990, 200…
+$ Mileage               [3m[38;5;246m<dbl>[39m[23m 127300, 57850, 39190, 210814, 127869, 33603, 86686, 30663, 73470, 262514, 8…
+$ Price                 [3m[38;5;246m<dbl>[39m[23m 3074, 49704, 24072, 1705, 4101, 29204, 14350, 30297, 9977, 1049, 17173, 719…
+$ price_category        [3m[38;5;246m<chr>[39m[23m ""budget"", ""mid-range"", ""midrange"", ""budget"", ""budget"", ""midrange"", ""budget""…"
+"1",""
+"1","
+"
