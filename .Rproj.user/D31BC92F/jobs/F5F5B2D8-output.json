@@ -15,3 +15,5 @@
 [1,"\n"]
 [1,"Watching files for changes\nBrowse at http://localhost:6450/labs/lab0/scripts/lab0_template.html\nListening on http://127.0.0.1:6450/\n"]
 [1,"GET: /labs/lab0/scripts/lab0_template.html\n"]
+[1,"WARN: Unable to resolve link target: labs/lab0/scripts/labo_template.qmd\n"]
+[1,"GET: /labs/lab0/scripts/lab0_template.html\n"]
