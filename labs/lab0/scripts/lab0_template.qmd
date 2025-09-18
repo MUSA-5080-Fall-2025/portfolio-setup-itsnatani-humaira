@@ -49,7 +49,7 @@ Explore the structure of your data and answer these questions:
 glimpse(car_data)
 
 # Check the column names
-
+colnames(car_data)
 
 # Look at the first few rows
 head(car_data)

@@ -1,0 +1,22 @@
+"0","reliability_summary <- ms_reliability %>%
+  group_by(reliability) %>%
+  summarize(
+    counties = n(),
+    avg_moe = round((n / sum(n)) * 100, 0)
+  )
+"
+"1","[1m[33mError[39m in `summarize()`:[22m
+[38;5;232m[36mℹ[38;5;232m In argument: `avg_moe = round((n/sum(n)) * 100, 0)`.
+[36mℹ[38;5;232m In group 1: `reliability = ""High Confidence""`.[39m
+[1mCaused by error in `sum()`:[22m
+[33m![39m invalid 'type' (closure) of argument
+Backtrace:
+[90m  1. [39mms_reliability %>% group_by(reliability) %>% ...
+[90m  3. [39m[1m[94mdplyr:::summarise.grouped_df([39m[22m., counties = n(), avg_moe = round((n/sum(n)) * 100, 0)[1m[94m)[39m[22m
+[90m  4. [39mdplyr:::summarise_cols(.data, dplyr_quosures(...), by, ""summarise"")
+[90m  6. [39mdplyr:::map(quosures, summarise_eval_one, mask = mask)
+[90m  7. [39m[1mbase[22m::lapply(.x, .f, ...)
+[90m  8. [39m[1mdplyr[22m (local) FUN(X[[i]], ...)
+[90m  9. [39mmask$eval_all_summarise(quo)
+[90m 10. [39m[1mdplyr[22m (local) eval()
+"
