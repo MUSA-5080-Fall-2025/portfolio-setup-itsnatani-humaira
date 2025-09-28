@@ -1,0 +1,595 @@
+<table>
+<caption>Algorithm Decision Framework for County-Level Data</caption>
+<colgroup>
+<col width="16%" />
+<col width="14%" />
+<col width="6%" />
+<col width="20%" />
+<col width="42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">County</th>
+<th align="right">Median Income</th>
+<th align="right">MOE %</th>
+<th align="left">Reliability</th>
+<th align="left">Algorithm Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Adams</td>
+<td align="right">37,271</td>
+<td align="right">13</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Alcorn</td>
+<td align="right">47,716</td>
+<td align="right">9</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Amite</td>
+<td align="right">34,866</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Attala</td>
+<td align="right">42,680</td>
+<td align="right">12</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Benton</td>
+<td align="right">38,750</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Bolivar</td>
+<td align="right">37,845</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Calhoun</td>
+<td align="right">44,505</td>
+<td align="right">9</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Carroll</td>
+<td align="right">42,285</td>
+<td align="right">35</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Chickasaw</td>
+<td align="right">40,224</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Choctaw</td>
+<td align="right">41,887</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Claiborne</td>
+<td align="right">34,282</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Clarke</td>
+<td align="right">46,329</td>
+<td align="right">20</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Clay</td>
+<td align="right">37,412</td>
+<td align="right">10</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Coahoma</td>
+<td align="right">36,075</td>
+<td align="right">7</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Copiah</td>
+<td align="right">46,889</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Covington</td>
+<td align="right">40,164</td>
+<td align="right">14</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">DeSoto</td>
+<td align="right">79,666</td>
+<td align="right">3</td>
+<td align="left">High Confidence</td>
+<td align="left">Safe for algorithmic decisions</td>
+</tr>
+<tr class="even">
+<td align="left">Forrest</td>
+<td align="right">49,340</td>
+<td align="right">6</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Franklin</td>
+<td align="right">43,942</td>
+<td align="right">14</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">George</td>
+<td align="right">51,349</td>
+<td align="right">10</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Greene</td>
+<td align="right">50,000</td>
+<td align="right">15</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Grenada</td>
+<td align="right">45,745</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Hancock</td>
+<td align="right">63,623</td>
+<td align="right">5</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Harrison</td>
+<td align="right">55,211</td>
+<td align="right">4</td>
+<td align="left">High Confidence</td>
+<td align="left">Safe for algorithmic decisions</td>
+</tr>
+<tr class="odd">
+<td align="left">Hinds</td>
+<td align="right">48,596</td>
+<td align="right">6</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Holmes</td>
+<td align="right">28,818</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Humphreys</td>
+<td align="right">31,907</td>
+<td align="right">12</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Issaquena</td>
+<td align="right">17,900</td>
+<td align="right">29</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Itawamba</td>
+<td align="right">57,252</td>
+<td align="right">13</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Jackson</td>
+<td align="right">60,045</td>
+<td align="right">4</td>
+<td align="left">High Confidence</td>
+<td align="left">Safe for algorithmic decisions</td>
+</tr>
+<tr class="odd">
+<td align="left">Jasper</td>
+<td align="right">43,914</td>
+<td align="right">12</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Jefferson</td>
+<td align="right">31,544</td>
+<td align="right">13</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Jefferson Davis</td>
+<td align="right">36,473</td>
+<td align="right">15</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Jones</td>
+<td align="right">49,451</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Kemper</td>
+<td align="right">42,947</td>
+<td align="right">10</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Lafayette</td>
+<td align="right">59,748</td>
+<td align="right">5</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Lamar</td>
+<td align="right">67,972</td>
+<td align="right">5</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Lauderdale</td>
+<td align="right">45,649</td>
+<td align="right">5</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Lawrence</td>
+<td align="right">41,096</td>
+<td align="right">9</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Leake</td>
+<td align="right">46,669</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Lee</td>
+<td align="right">64,479</td>
+<td align="right">5</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Leflore</td>
+<td align="right">33,115</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Lincoln</td>
+<td align="right">47,069</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Lowndes</td>
+<td align="right">53,687</td>
+<td align="right">4</td>
+<td align="left">High Confidence</td>
+<td align="left">Safe for algorithmic decisions</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison</td>
+<td align="right">79,105</td>
+<td align="right">4</td>
+<td align="left">High Confidence</td>
+<td align="left">Safe for algorithmic decisions</td>
+</tr>
+<tr class="even">
+<td align="left">Marion</td>
+<td align="right">38,399</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Marshall</td>
+<td align="right">51,431</td>
+<td align="right">14</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Monroe</td>
+<td align="right">51,190</td>
+<td align="right">5</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Montgomery</td>
+<td align="right">36,845</td>
+<td align="right">16</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Neshoba</td>
+<td align="right">47,400</td>
+<td align="right">12</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Newton</td>
+<td align="right">49,160</td>
+<td align="right">9</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Noxubee</td>
+<td align="right">42,298</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Oktibbeha</td>
+<td align="right">42,953</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Panola</td>
+<td align="right">47,894</td>
+<td align="right">16</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Pearl River</td>
+<td align="right">54,220</td>
+<td align="right">9</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Perry</td>
+<td align="right">48,333</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Pike</td>
+<td align="right">40,131</td>
+<td align="right">6</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Pontotoc</td>
+<td align="right">54,414</td>
+<td align="right">9</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Prentiss</td>
+<td align="right">51,578</td>
+<td align="right">12</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Quitman</td>
+<td align="right">31,192</td>
+<td align="right">12</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Rankin</td>
+<td align="right">76,460</td>
+<td align="right">4</td>
+<td align="left">High Confidence</td>
+<td align="left">Safe for algorithmic decisions</td>
+</tr>
+<tr class="even">
+<td align="left">Scott</td>
+<td align="right">44,968</td>
+<td align="right">16</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Sharkey</td>
+<td align="right">41,000</td>
+<td align="right">25</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Simpson</td>
+<td align="right">50,867</td>
+<td align="right">7</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Smith</td>
+<td align="right">51,983</td>
+<td align="right">21</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Stone</td>
+<td align="right">55,894</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Sunflower</td>
+<td align="right">37,403</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Tallahatchie</td>
+<td align="right">35,428</td>
+<td align="right">12</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Tate</td>
+<td align="right">61,286</td>
+<td align="right">8</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Tippah</td>
+<td align="right">47,968</td>
+<td align="right">9</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="odd">
+<td align="left">Tishomingo</td>
+<td align="right">45,545</td>
+<td align="right">15</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Tunica</td>
+<td align="right">41,676</td>
+<td align="right">24</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Union</td>
+<td align="right">55,970</td>
+<td align="right">9</td>
+<td align="left">Moderate Confidence</td>
+<td align="left">Use with caution - monitor outcomes</td>
+</tr>
+<tr class="even">
+<td align="left">Walthall</td>
+<td align="right">37,145</td>
+<td align="right">17</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Warren</td>
+<td align="right">54,117</td>
+<td align="right">4</td>
+<td align="left">High Confidence</td>
+<td align="left">Safe for algorithmic decisions</td>
+</tr>
+<tr class="even">
+<td align="left">Washington</td>
+<td align="right">38,394</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Wayne</td>
+<td align="right">34,875</td>
+<td align="right">13</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Webster</td>
+<td align="right">55,657</td>
+<td align="right">12</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Wilkinson</td>
+<td align="right">34,928</td>
+<td align="right">24</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Winston</td>
+<td align="right">45,516</td>
+<td align="right">13</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="odd">
+<td align="left">Yalobusha</td>
+<td align="right">47,006</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+<tr class="even">
+<td align="left">Yazoo</td>
+<td align="right">41,867</td>
+<td align="right">11</td>
+<td align="left">Low Confidence</td>
+<td align="left">Requires manual review or additional data</td>
+</tr>
+</tbody>
+</table>

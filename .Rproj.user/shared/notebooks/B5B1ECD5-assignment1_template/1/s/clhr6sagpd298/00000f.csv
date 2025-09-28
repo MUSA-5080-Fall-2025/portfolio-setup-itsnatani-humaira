@@ -1,0 +1,17 @@
+"0","# Write your get_acs() code here
+ms_data <- get_acs(
+  geography = ""county"",
+  variables = c(
+    total_pop = ""B01003_001"",
+    median_income = ""B19013_001""
+  ),
+  state = ""MS"",
+  year = 2022,
+  survey = ""acs5"",
+  output = ""wide""
+)
+"
+"2","Getting data from the 2018-2022 5-year ACS
+"
+"2","Using FIPS code '28' for state 'MS'
+"

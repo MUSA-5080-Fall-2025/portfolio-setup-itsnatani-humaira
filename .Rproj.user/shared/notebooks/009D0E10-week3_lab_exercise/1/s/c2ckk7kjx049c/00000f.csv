@@ -1,0 +1,7 @@
+"0","print(""Housing cost variables:"")
+"
+"1","[1]"
+"1"," ""Housing cost variables:"""
+"1","
+"
+"0","head(housing_vars, 10)"

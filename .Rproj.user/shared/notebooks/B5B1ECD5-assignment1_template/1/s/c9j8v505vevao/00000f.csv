@@ -1,0 +1,21 @@
+"0","# Use get_acs() to retrieve tract-level data
+# Hint: You may need to specify county codes in the county parameter
+ms_counties_data <- get_acs(
+  geography = ""tract"",
+  variables = c(
+    total_pop = ""B01003_001"",
+    white_alone = ""B03002_003"",
+    african_american = ""B03002_004"",
+    hispanic_latino = ""B03002_012""
+  ),
+  state = ""MS"",
+  county = c(""015"", ""017"", ""033""),
+  year = 2022,
+  survey = ""acs5"",
+  output = ""wide""
+)
+"
+"2","Getting data from the 2018-2022 5-year ACS
+"
+"2","Using FIPS code '28' for state 'MS'
+"
