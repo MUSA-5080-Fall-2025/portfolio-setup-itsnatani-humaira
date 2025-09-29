@@ -1,0 +1,28 @@
+{
+    "id": "8FE884CB",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1759159500848.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "id": "afabef1ddc1d4c9891800a9fdc26e866",
+        "name": "county_shapes",
+        "title": "county_shapes",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 18859042487337027,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1759159500848,
+    "read_only": false,
+    "read_only_alternatives": []
+}

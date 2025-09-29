@@ -5,68 +5,50 @@ date: "2025-09-29"
 
 ## Key Concepts Learned
 
-**Part 1: Why Visualization Matters**
-Visual presentation change the impact of your analysis when we have to present it to stakeholders.
-- Anscombe’s Quartet and the limits of summary statistics
-- Visualization in policy context
-- Connection to algorithmic bias and data ethics
+**Part 1: Why Spatial Analysis Matters**
 
-Four datasets with identical summary statistics:
+Geographic bias in algorithms:
+- Training data may under-represent certain areas
+- Spatial autocorrelation violates independence assumptions
+- Service delivery algorithms may reinforce geographic inequities
 
-- Same means (x̄ = 9, ȳ = 7.5)
-- Same variances
-- Same correlation (r = 0.816)
-- Same regression line
+Examples:
+- Rideshare algorithms avoiding certain neighborhoods
+- Crime prediction concentrating enforcement in specific areas
+- Social service algorithms missing rural communities
 
-Why this matters for our work:
+--> Understand spatial patterns to help design fairer systems
 
-- Summary statistics can hide critical patterns
-- Outliers may represent important communities
-- Relationships aren’t always linear
-- Visual inspection reveals data quality issues
+**Part 2: Spatial Data Fundamentals**
 
-Example: A county with “average” income might have extreme inequality that algorithms would miss without visualization.
+Vector Data Model
+--> we represent the real world in simplified geometric representation.
+There are three basic types:
+1. Points → Locations (schools, hospitals, crime incidents)
+2. Lines → Linear features (roads, rivers, transit routes)
+3. Polygons → Areas (census tracts, neighborhoods, service areas)
 
-The smaller our sample, the bigger our margin of error.
-Datas in Block Group level has higher MOE compared to Census Tract level.
+Each feature has:
+1. Geometry → Shape and location
+2. Attributes → Data about that feature (population, income, etc.)
 
-**Part 2 : Grammar of Graphic**
-Grammar of Graphics principles:
+The format of the spatial data is commonly SHAPEFILE.
+SHAPEFILE consisted of .shp, .shx, and .dbf.
+The other format is geojson, kml/KMZ (Google Earth), and Database connections (PostGIS).
 
-Data → Aesthetics → Geometries → Visual
+--> The sf Package: Simple Features for R
+- Modern replacement for older spatial packages
+- Integrates with tidyverse workflows
+- Follows international standards
+- Fast and reliable
 
-Data: Your dataset (census data, survey responses, etc.)
-Aesthetics: What variables map to visual properties (x, y, color, size)
-Geometries: How to display the data (points, bars, lines)
-Additional layers: Scales, themes, facets, annotations
-
-Aesthetics map data to visual properties:
-
-x, y - position
-color - point/line color
-fill - area fill color
-size - point/line size
-shape - point shape
-alpha - transparency
-Important: Aesthetics go inside aes(), constants go outside
-
-**Part 3: Exploratory Data Analysis**
-Exploratory Data Analysis is detective work:
-
-What does the data look like? (distributions, missing values)
-What patterns exist? (relationships, clusters, trends)
-What’s unusual? (outliers, anomalies, data quality issues)
-What questions does this raise? (hypotheses for further investigation)
-How reliable is this data?
-Goal: Understand your data before making decisions or building models
-
+**Part 3: Spatial Operations**
 
 
 ## Coding Techniques
-- Every ggplot has this pattern:
-ggplot(data = your_data) +   aes(x = variable1, y = variable2) +   geom_something() +   additional_layers()
+- Extract features based on spatial relationships:
+st_filter(), st_intersects(), st_touches(), st_within()
 
-- [Quarto features learned]
 
 ## Questions & Challenges
 - [What I didn't fully understand]
