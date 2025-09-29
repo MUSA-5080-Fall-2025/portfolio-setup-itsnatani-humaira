@@ -1,0 +1,52 @@
+"0","# Get census tract poverty data for Philadelphia
+philly_poverty <- get_acs(
+    geography = ""tract"",
+    variables = c(
+      poverty_pop = ""B17001_001"",     
+      poverty_below = ""B17001_002""    
+    ),
+    state = ""PA"",
+    county = ""101"",
+    year = 2022,
+    output = ""wide""
+  ) %>%
+  filter(poverty_popE > 0) %>%  # Remove tracts with no poverty data
+  mutate(
+    # Calculate poverty rate and its MOE
+    poverty_rate = (poverty_belowE / poverty_popE) * 100,
+    
+    # MOE for derived percentage using error propagation
+    poverty_rate_moe = poverty_rate * sqrt((poverty_belowM/poverty_belowE)^2 + (poverty_popM/poverty_popE)^2),
+    
+    # Coefficient of variation
+    poverty_cv = (poverty_rate_moe / poverty_rate) * 100,
+    
+    # Reliability assessment
+    reliability = case_when(
+      poverty_cv < 12 ~ ""High"",
+      poverty_cv <= 40 ~ ""Moderate"",
+      poverty_cv <= 75 ~ ""Low"",
+      TRUE ~ ""Very Low""
+    ),
+    
+    # Color coding
+    reliability_color = case_when(
+      reliability == ""High"" ~ ""🟢"",
+      reliability == ""Moderate"" ~ ""🟡"",
+      reliability == ""Low"" ~ ""🟠"",
+      TRUE ~ ""🔴""
+    ),
+    
+    # Population size categories
+    pop_category = case_when(
+      poverty_popE < 500 ~ ""Very Small (<500)"",
+      poverty_popE < 1000 ~ ""Small (500-1000)"",
+      poverty_popE < 1500 ~ ""Medium (1000-1500)"",
+      TRUE ~ ""Large (1500+)""
+    )
+  )
+"
+"2","Getting data from the 2018-2022 5-year ACS
+"
+"2","Using FIPS code '42' for state 'PA'
+"
