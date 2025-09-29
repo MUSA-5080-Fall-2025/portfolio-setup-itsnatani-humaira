@@ -1,0 +1,80 @@
+---
+title: "Week 4 Notes - Spatial Data & GIS Operations in R"
+date: "2025-09-29"
+---
+
+## Key Concepts Learned
+
+**Part 1: Why Visualization Matters**
+Visual presentation change the impact of your analysis when we have to present it to stakeholders.
+- Anscombe’s Quartet and the limits of summary statistics
+- Visualization in policy context
+- Connection to algorithmic bias and data ethics
+
+Four datasets with identical summary statistics:
+
+- Same means (x̄ = 9, ȳ = 7.5)
+- Same variances
+- Same correlation (r = 0.816)
+- Same regression line
+
+Why this matters for our work:
+
+- Summary statistics can hide critical patterns
+- Outliers may represent important communities
+- Relationships aren’t always linear
+- Visual inspection reveals data quality issues
+
+Example: A county with “average” income might have extreme inequality that algorithms would miss without visualization.
+
+The smaller our sample, the bigger our margin of error.
+Datas in Block Group level has higher MOE compared to Census Tract level.
+
+**Part 2 : Grammar of Graphic**
+Grammar of Graphics principles:
+
+Data → Aesthetics → Geometries → Visual
+
+Data: Your dataset (census data, survey responses, etc.)
+Aesthetics: What variables map to visual properties (x, y, color, size)
+Geometries: How to display the data (points, bars, lines)
+Additional layers: Scales, themes, facets, annotations
+
+Aesthetics map data to visual properties:
+
+x, y - position
+color - point/line color
+fill - area fill color
+size - point/line size
+shape - point shape
+alpha - transparency
+Important: Aesthetics go inside aes(), constants go outside
+
+**Part 3: Exploratory Data Analysis**
+Exploratory Data Analysis is detective work:
+
+What does the data look like? (distributions, missing values)
+What patterns exist? (relationships, clusters, trends)
+What’s unusual? (outliers, anomalies, data quality issues)
+What questions does this raise? (hypotheses for further investigation)
+How reliable is this data?
+Goal: Understand your data before making decisions or building models
+
+
+
+## Coding Techniques
+- Every ggplot has this pattern:
+ggplot(data = your_data) +   aes(x = variable1, y = variable2) +   geom_something() +   additional_layers()
+
+- [Quarto features learned]
+
+## Questions & Challenges
+- [What I didn't fully understand]
+- [Areas needing more practice]
+
+## Connections to Policy
+- [How this week's content applies to real policy work]
+
+## Reflection
+- [What was most interesting]
+- [How I'll apply this knowledge] 
