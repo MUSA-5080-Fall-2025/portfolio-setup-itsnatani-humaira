@@ -1,5 +1,0 @@
-"0","# Set your Census API key if you haven't already
-census_api_key(Sys.getenv(""28da3bddd17210421250559be63d8c9379ee190c""))
-"
-"2","To install your API key for use in future sessions, run this function with `install = TRUE`.
-"
