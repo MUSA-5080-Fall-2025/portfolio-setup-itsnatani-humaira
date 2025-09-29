@@ -1,0 +1,4 @@
+[1,"==> quarto preview week-03-notes.qmd --to default --no-watch-inputs --no-browse\n\n"]
+[1,"pandoc \n  to: html\n  output-file: week-03-notes.html\n  standalone: true\n  section-divs: true\n  html-math-method: mathjax\n  wrap: none\n  default-image-extension: png\n  variables: {}\n  \nmetadata\n  document-css: false\n  link-citations: true\n  date-format: long\n  lang: en\n  title: Week 3 Notes - Data Visualization\n  date: '2025-09-15'\n  \n"]
+[1,"Output created: week-03-notes.html\n\nWatching files for changes\n"]
+[1,"Browse at http://localhost:5009/\nListening on http://127.0.0.1:5009/\n"]
