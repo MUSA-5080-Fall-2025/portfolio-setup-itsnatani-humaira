@@ -5,68 +5,152 @@ date: "2025-09-29"
 
 ## Key Concepts Learned
 
-**Part 1: Why Visualization Matters**
-Visual presentation change the impact of your analysis when we have to present it to stakeholders.
-- Anscombe’s Quartet and the limits of summary statistics
-- Visualization in policy context
-- Connection to algorithmic bias and data ethics
+**Part 1: Why Spatial Analysis Matters**
 
-Four datasets with identical summary statistics:
+Geographic bias in algorithms:
+- Training data may under-represent certain areas
+- Spatial autocorrelation violates independence assumptions
+- Service delivery algorithms may reinforce geographic inequities
 
-- Same means (x̄ = 9, ȳ = 7.5)
-- Same variances
-- Same correlation (r = 0.816)
-- Same regression line
+Examples:
+- Rideshare algorithms avoiding certain neighborhoods
+- Crime prediction concentrating enforcement in specific areas
+- Social service algorithms missing rural communities
 
-Why this matters for our work:
+--> Understand spatial patterns to help design fairer systems
 
-- Summary statistics can hide critical patterns
-- Outliers may represent important communities
-- Relationships aren’t always linear
-- Visual inspection reveals data quality issues
+**Part 2: Spatial Data Fundamentals**
 
-Example: A county with “average” income might have extreme inequality that algorithms would miss without visualization.
+Vector Data Model
+--> we represent the real world in simplified geometric representation.
+There are three basic types:
+1. Points → Locations (schools, hospitals, crime incidents)
+2. Lines → Linear features (roads, rivers, transit routes)
+3. Polygons → Areas (census tracts, neighborhoods, service areas)
 
-The smaller our sample, the bigger our margin of error.
-Datas in Block Group level has higher MOE compared to Census Tract level.
+Each feature has:
+1. Geometry → Shape and location
+2. Attributes → Data about that feature (population, income, etc.)
 
-**Part 2 : Grammar of Graphic**
-Grammar of Graphics principles:
+The format of the spatial data is commonly SHAPEFILE.
+SHAPEFILE consisted of .shp, .shx, and .dbf.
+The other format is geojson, kml/KMZ (Google Earth), and Database connections (PostGIS).
 
-Data → Aesthetics → Geometries → Visual
+--> The sf Package: Simple Features for R
+- Modern replacement for older spatial packages
+- Integrates with tidyverse workflows
+- Follows international standards
+- Fast and reliable
 
-Data: Your dataset (census data, survey responses, etc.)
-Aesthetics: What variables map to visual properties (x, y, color, size)
-Geometries: How to display the data (points, bars, lines)
-Additional layers: Scales, themes, facets, annotations
+**Part 3: Spatial Operations**
 
-Aesthetics map data to visual properties:
+The .predicate tells st_filter() what spatial relationship to look for:
 
-x, y - position
-color - point/line color
-fill - area fill color
-size - point/line size
-shape - point shape
-alpha - transparency
-Important: Aesthetics go inside aes(), constants go outside
+r predicate-structure # Basic structure: st_filter(data_to_filter, reference_geometry, .predicate = relationship)
 
-**Part 3: Exploratory Data Analysis**
-Exploratory Data Analysis is detective work:
+Different questions need different relationships:
 
-What does the data look like? (distributions, missing values)
-What patterns exist? (relationships, clusters, trends)
-What’s unusual? (outliers, anomalies, data quality issues)
-What questions does this raise? (hypotheses for further investigation)
-How reliable is this data?
-Goal: Understand your data before making decisions or building models
+“Which counties border Allegheny?” → st_touches
+“Which tracts are IN Allegheny?” → st_within
+“Which tracts overlap a metro area?” → st_intersects
+Default: If no .predicate specified, uses st_intersects
 
+For county neighbors, why st_touches not st_intersects? Because st_intersects includes the reference feature itself.
 
+st_intersects()	Any overlap at all	“Counties affected by flooding”
+st_touches()	Share boundary, no interior overlap	“Neighboring counties”
+st_within()	Completely inside	“Schools within district boundaries”
+st_contains()	Completely contains	“Districts containing hospitals”
+st_overlaps()	Partial overlap	“Overlapping service areas”
+st_disjoint()	No spatial relationship	“Counties separate from urban areas”
+
+Most common: st_intersects() (any overlap) and st_touches() (neighbors)
+
+**Part 4: Geometry Operations**
+
+Create zones around features
+
+`{r buffers} # 10km buffer around all hospitals hospital_buffers <- hospitals %>% st_buffer(dist = 10000) # 10,000 meters
+
+Different buffer sizes by hospital type
+hospital_buffers <- hospitals %>% mutate( buffer_size = case_when( type == “Major Medical Center” ~ 15000, type == “Community Hospital” ~ 10000, type == “Clinic” ~ 5000 ) ) %>% st_buffer(dist = .$buffer_size) `
+
+Policy application: Service accessibility zones, environmental impact areas
+
+--> Intersection Operations
+Find overlapping areas:
+
+The Key Difference st_filter() with predicates: Selects complete features (keeps or removes entire rows)
+st_intersection() and st_union(): Modifies geometries (creates new shapes)
+
+Use st_filter() when:
+- “Which census tracts touch hospital service areas?”
+- You want to select/identify features based on location
+- You need complete features with their original boundaries
+- You’re counting: “How many tracts are near hospitals?”
+
+Use st_intersection() when:
+- “What is the area of overlap between tracts and service zones?”
+- You need to calculate areas, populations, or other measures within specific boundaries
+- You’re doing spatial overlay analysis
+- You need to clip data to a study area
+
+**Part 5: Coordinate Reference Systems**
+
+Why projection matters? Because the Earth is round, maps are flat.
+
+Problems:
+- Can’t preserve area, distance, and angles simultaneously
+- Different projections optimize different properties
+- Wrong projection → wrong analysis results!
+
+Geographic Coordinate Systems (GCS):
+- Latitude/longitude coordinates
+- Units: decimal degrees
+- Good for: Global datasets, web mapping
+- Bad for: Area/distance calculations
+
+Projected Coordinate Systems (PCS):
+- X/Y coordinates on a flat plane
+- Units: meters, feet, etc.
+- Good for: Local analysis, accurate measurements
+- Bad for: Large areas, global datasets
+
+Common Coordinate Reference Systems
+- WGS84 (EPSG:4326)
+- Web Mercator (EPSG:3857)
+- State Plane / UTM zones
+
+Checking and Setting CRS
+
+To simply check current CRS st_crs(pa_counties)
+To set CRS (ONLY if missing) pa_counties <- st_set_crs(pa_counties, 4326)
+Transform to different CRS
+
+Pennsylvania South State Plane (good for PA analysis)
+pa_counties_projected <- pa_counties %>%   st_transform(crs = 3365)
+
+Transform to Albers Equal Area (good for area calculations) pa_counties_albers <- pa_counties %>%   st_transform(crs = 5070) `
+
+**Part 6: Conclusion**
+
+Policy Analysis Workflow
+Typical spatial analysis steps:
+
+Load data → Get spatial boundaries and attribute data
+Check projections → Transform to appropriate CRS
+Join datasets → Combine spatial and non-spatial data
+Spatial operations → Buffers, intersections, distance calculations
+Aggregation → Summarize across spatial units
+Visualization → Maps and charts
+Interpretation → Policy recommendations
 
 ## Coding Techniques
-- Every ggplot has this pattern:
-ggplot(data = your_data) +   aes(x = variable1, y = variable2) +   geom_something() +   additional_layers()
+- Extract features based on spatial relationships:
+st_filter(), st_intersects(), st_touches(), st_within()
+- r predicate-structure Basic structure: 
+t_filter(data_to_filter, reference_geometry, .predicate = relationship)
 
-- [Quarto features learned]
 
 ## Questions & Challenges
 - [What I didn't fully understand]

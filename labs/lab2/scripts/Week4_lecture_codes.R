@@ -5,13 +5,13 @@ library(tidyverse)
 library(ggplot2)
 library(tigris)
 library(tidycensus)
-census_api_key("Your Code Here")
+census_api_key("28da3bddd17210421250559be63d8c9379ee190c")
 # Read a shapefile
-pa_counties <- st_read("data/Pennsylvania_County_Boundaries.shp")
+pa_counties <- st_read("C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/labs/lab2/scripts/data/Pennsylvania_County_Boundaries.shp")
 
 # Read GeoJSON
-districts <- st_read("data/districts.geojson")
-hospitals <- st_read("data/hospitals.geojson")
+districts <- st_read("C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/labs/lab2/scripts/data/districts.geojson")
+hospitals <- st_read("C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/labs/lab2/scripts/data/hospitals.geojson")
 #make crs the same (will go over later!)
 hospitals <- hospitals %>%
   st_transform(st_crs(pa_counties))

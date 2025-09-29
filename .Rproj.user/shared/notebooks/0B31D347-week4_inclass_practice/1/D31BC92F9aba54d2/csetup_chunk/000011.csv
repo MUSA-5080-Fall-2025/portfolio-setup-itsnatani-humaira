@@ -1,5 +1,0 @@
-"0","# Load the data (same as lecture)
-pa_counties <- st_read(here(""data/Pennsylvania_County_Boundaries.shp""))
-"
-"2","Error: Cannot open ""C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/data/Pennsylvania_County_Boundaries.shp""; The file doesn't seem to exist.
-"
