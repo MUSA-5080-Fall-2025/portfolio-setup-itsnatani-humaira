@@ -136,7 +136,7 @@ pa_tracts_demo <- pa_demo_data %>%
                 female65_66 + female67_69 + female70_74 +
                 female75_79 + female80_84 + female85plus
   )
-pa_tracts_demo <- st_transform(pa_summary, st_crs(pa_counties))
+pa_tracts_demo <- st_transform(pa_tracts_demo, st_crs(pa_counties))
 
 #count missing income data
 sum(is.na(pa_tracts_demo$med_income))

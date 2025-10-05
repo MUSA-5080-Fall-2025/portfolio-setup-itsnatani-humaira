@@ -3,7 +3,7 @@
     "path": "C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/assignments/assignment2/scripts/assignment2_template.qmd",
     "project_path": "assignments/assignment2/scripts/assignment2_template.qmd",
     "type": "quarto_markdown",
-    "hash": "1781867434",
+    "hash": "3986133867",
     "contents": "",
     "dirty": false,
     "created": 1759693839654.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "160,14",
-        "scrollLine": "152"
+        "cursorPosition": "144,0",
+        "scrollLine": "128"
     },
     "folds": "",
-    "lastKnownWriteTime": 1759697638,
+    "lastKnownWriteTime": 1759697860,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1759697638128,
+    "last_content_update": 1759697860522,
     "read_only": false,
     "read_only_alternatives": []
 }
