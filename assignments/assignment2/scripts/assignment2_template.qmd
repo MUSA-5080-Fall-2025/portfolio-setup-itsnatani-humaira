@@ -1,8 +1,8 @@
 ---
 title: "Assignment 2: Spatial Analysis and Visualization"
 subtitle: "Healthcare Access and Equity in Pennsylvania"
-author: "Your Name Here"
-date: today
+author: "Itsnatani Humaira Anaqami"
+date: 05 October 2025
 format: 
   html:
     code-fold: false
@@ -48,22 +48,39 @@ Load the required spatial data:
 **Your Task:**
 ```{r}
 # Load required packages
+library(sf)
+library(tidyverse)
+library(tigris)
+library(tidycensus)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(patchwork)
+library(here)
 
+# Set your Census API key
+census_api_key(Sys.getenv("28da3bddd17210421250559be63d8c9379ee190c"))
 
 # Load spatial data
+pa_counties <- st_read(here("C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/assignments/assignment2/scripts/data/Pennsylvania_County_Boundaries.shp"))
+hospitals <- st_read(here("C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/assignments/assignment2/scripts/data/hospitals.geojson"))
+census_tracts <- tracts(state = "PA", cb = TRUE)
 
-
-
+# Standardize CRS
+st_crs(pa_counties)
+hospitals <- st_transform(hospitals, st_crs(pa_counties))
+census_tracts <- st_transform(census_tracts, st_crs(pa_counties))
 
 # Check that all data loaded correctly
-
-
+view(pa_counties)
+view(hospitals)
+view(census_tracts)
 ```
 
 **Questions to answer:**
-- How many hospitals are in your dataset?
-- How many census tracts?
-- What coordinate reference system is each dataset in?
+- How many hospitals are in your dataset? 223 hospitals
+- How many census tracts? 3445 census tracts
+- What coordinate reference system is each dataset in? WGS 84 / Pseudo-Mercator
 
 ---
 
@@ -79,19 +96,59 @@ Use `tidycensus` to download tract-level demographic data for Pennsylvania.
 **Your Task:**
 ```{r}
 # Get demographic data from ACS
+vars <- c(
+  total_pop = "B01003_001",
+  med_income = "B19013_001",
+  male65_66 = "B01001_020",
+  male67_69 = "B01001_021",
+  male70_74 = "B01001_022",
+  male75_79 = "B01001_023",
+  male80_84 = "B01001_024",
+  male85plus = "B01001_025",
+  female65_66 = "B01001_044",
+  female67_69 = "B01001_045",
+  female70_74 = "B01001_046",
+  female75_79 = "B01001_047",
+  female80_84 = "B01001_048",
+  female85plus = "B01001_049"
+)
 
+# Pull data
+pa_demo_data <- get_acs(
+  geography = "tract",
+  state = "PA",
+  variables = vars,
+  survey = "acs5",
+  year = 2022,      # most recent ACS 5-year data
+  geometry = TRUE   # include spatial geometries
+)
 
-
+head(pa_demo_data)
 
 # Join to tract boundaries
 
+pa_tracts_demo <- pa_demo_data %>%
+  select(GEOID, NAME, variable, estimate) %>%
+  pivot_wider(names_from = variable, values_from = estimate) %>%
+  mutate(
+    pop65plus = male65_66 + male67_69 + male70_74 + male75_79 +
+                male80_84 + male85plus +
+                female65_66 + female67_69 + female70_74 +
+                female75_79 + female80_84 + female85plus
+  )
+pa_tracts_demo <- st_transform(pa_summary, st_crs(pa_counties))
 
+#count missing income data
+sum(is.na(pa_tracts_demo$med_income))
+
+#calculate median income across all PA census tracts
+median_income_pa <- median(pa_tracts_demo$med_income, na.rm = TRUE)
 ```
 
 **Questions to answer:**
-- What year of ACS data are you using?
-- How many tracts have missing income data?
-- What is the median income across all PA census tracts?
+- What year of ACS data are you using? 2022
+- How many tracts have missing income data? 63 tracts
+- What is the median income across all PA census tracts? $70,188
 
 ---
 
