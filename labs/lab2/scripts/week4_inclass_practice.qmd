@@ -24,6 +24,7 @@ library(tidycensus)
 library(scales)
 library(patchwork)
 library(here)
+
 # Set Census API key
 census_api_key("28da3bddd17210421250559be63d8c9379ee190c")
 
@@ -32,7 +33,7 @@ pa_counties <- st_read(here("labs/lab2/scripts/data/Pennsylvania_County_Boundari
 districts <- st_read(here("labs/lab2/scripts/data/districts.geojson"))
 hospitals <- st_read(here("labs/lab2/scripts/data/hospitals.geojson"))
 census_tracts <- tracts(state = "PA", cb = TRUE)
-metro_areas <- core_based_statistical_areas(cb = TRUE)
+metro_areas <- core_based_statistical_areas(cb = TRUE,year = 2023)
 
 # Standardize CRS
 hospitals <- st_transform(hospitals, st_crs(pa_counties))

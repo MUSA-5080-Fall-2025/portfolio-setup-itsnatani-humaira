@@ -125,12 +125,21 @@ Checking and Setting CRS
 
 To simply check current CRS st_crs(pa_counties)
 To set CRS (ONLY if missing) pa_counties <- st_set_crs(pa_counties, 4326)
-Transform to different CRS
+Transform to different CRS (it just rewrites the provided coordinate to the new proposed projection, be careful!)
 
 Pennsylvania South State Plane (good for PA analysis)
 pa_counties_projected <- pa_counties %>%   st_transform(crs = 3365)
 
-Transform to Albers Equal Area (good for area calculations) pa_counties_albers <- pa_counties %>%   st_transform(crs = 5070) `
+Transform to Albers Equal Area (good for area calculations/reprojection) pa_counties_albers <- pa_counties %>%   st_transform(crs = 5070) `
+
+Each map projection has its own limitations, which typically involve distortions in one or more of the following aspects:
+
+S – Shape: The projection may distort the true shapes of landmasses or features.
+A – Area: The relative size of regions may be exaggerated or minimized.
+D – Distance: Distances between locations may not be accurately represented.
+D – Direction: The angles and directions between points may be incorrect.
+
+No single map projection perfectly preserves all four properties, so cartographers choose based on the map’s purpose.
 
 **Part 6: Conclusion**
 
