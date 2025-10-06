@@ -1,14 +1,14 @@
 {
-    "id": "72A4760A",
+    "id": "4CFFE7E3",
     "path": "C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/labs/lab2/scripts/week4_inclass_practice.qmd",
     "project_path": "labs/lab2/scripts/week4_inclass_practice.qmd",
     "type": "quarto_markdown",
     "hash": "0",
     "contents": "",
-    "dirty": true,
-    "created": 1759694006215.0,
+    "dirty": false,
+    "created": 1759719699336.0,
     "source_on_save": false,
-    "relative_order": 4,
+    "relative_order": 1,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
@@ -21,7 +21,7 @@
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1759695064868,
+    "last_content_update": 1759165256,
     "read_only": false,
     "read_only_alternatives": []
 }

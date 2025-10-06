@@ -1,0 +1,17 @@
+"0","# Preview
+pa_vulnerable %>%
+  select(GEOID, NAME, med_income, total_pop, pop65plus, pct65plus)
+"
+"1","Simple feature collection with 225 features and 6 fields"
+"1","
+"
+"1","Geometry type: MULTIPOLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: -8963381 ymin: 4825544 xmax: -8349562 ymax: 5180747"
+"1","
+"
+"1","Projected CRS: WGS 84 / Pseudo-Mercator
+"

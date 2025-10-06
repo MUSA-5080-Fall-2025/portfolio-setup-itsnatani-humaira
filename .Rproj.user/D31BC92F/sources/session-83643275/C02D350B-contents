@@ -161,17 +161,32 @@ Identify census tracts with vulnerable populations based on TWO criteria:
 **Your Task:**
 ```{r}
 # Filter for vulnerable tracts based on your criteria
+# Identify vulnerable tracts
+pa_vulnerable <- pa_tracts_demo %>%
+  mutate(pct65plus = pop65plus / total_pop * 100) %>%
+  filter(med_income < 53300, pct65plus >= 20)
 
+# How many?
+nrow(pa_vulnerable)
+
+# Preview
+pa_vulnerable %>%
+  select(GEOID, NAME, med_income, total_pop, pop65plus, pct65plus)
 
 
 
 ```
 
 **Questions to answer:**
-- What income threshold did you choose and why?
-- What elderly population threshold did you choose and why?
-- How many tracts meet your vulnerability criteria?
-- What percentage of PA census tracts are considered vulnerable by your definition?
+- What income threshold did you choose and why? 
+I selected $53,300 as the threshold based on the Department of Community and Economic Development’s poverty income guideline for a family of three. I used a family of three as the reference point, assuming a typical household often consists of two parents and one child.
+
+- What elderly population threshold did you choose and why? According to the World Bank’s definition, a country is considered 'aging' when the share of people aged 65 and older exceeds 7 percent, 'aged' when it reaches 14 percent or more, and 'super-aged' when it surpasses 20 percent. I applied the 20 percent elderly population threshold to identify census tracts classified as 'super-aged,' as these areas are more vulnerable.
+
+- How many tracts meet your vulnerability criteria? 225 tracts
+
+- What percentage of PA census tracts are considered vulnerable by your definition? 6.53%
+
 
 ---
 
