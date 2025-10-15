@@ -1,0 +1,5 @@
+"0","# Calculate distance matrix (houses to crimes)
+dist_matrix <- st_distance(boston.sf, crimes.sf)
+"
+"2","Error: object 'crimes.sf' not found
+"

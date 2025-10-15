@@ -28,5 +28,17 @@
   },
   "assignments/assignment2/scripts/assignment2_template.qmd": {
     "assignment2_template.html": "500adfc3"
+  },
+  "assignments/midterm/Midterm_2025.qmd": {
+    "Midterm_2025.html": "10c986be"
+  },
+  "labs/lab2/scripts/week4_inclass_practice.qmd": {
+    "week4_inclass_practice.html": "129e09ef"
+  },
+  "weekly-notes/week-05-notes.qmd": {
+    "week-05-notes.html": "dc295317"
+  },
+  "weekly-notes/week-06-notes.qmd": {
+    "week-06-notes.html": "54b15634"
   }
 }

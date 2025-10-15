@@ -1,0 +1,31 @@
+"0","library(tidyverse)"
+"0","library(tidycensus)"
+"0","library(knitr)"
+"0","library(broom)"
+"0","library(caret)"
+"0",""
+"0","challenge_data <- get_acs("
+"0","  geography = ""county"","
+"0","  state = ""PA"","
+"0","  variables = c("
+"0","    home_value = ""B25077_001"",      # YOUR TARGET"
+"0","    total_pop = ""B01003_001"",       # Total population"
+"0","    median_income = ""B19013_001"",   # Median household income"
+"0","    median_age = ""B01002_001"",      # Median age"
+"0","    percent_college = ""B15003_022"", # Bachelor's degree or higher"
+"0","    median_rent = ""B25058_001"",     # Median rent"
+"0","    poverty_rate = ""B17001_002""     # Population in poverty"
+"0","  ),"
+"0","  year = 2022,"
+"0","  output = ""wide"""
+"0",")"
+"0",""
+"0","ggplot(df, aes(x = median_income, y = home_value)) +"
+"0","  geom_point() + geom_smooth(method = ""lm"")"
+"1","[1m[33mError[39m in `ggplot()`:[22m
+[38;5;232m[33m![38;5;232m `data` cannot be a function.
+[36mℹ[38;5;232m Have you misspelled the `data` argument in `ggplot()`?[39m
+Backtrace:
+[90m 1. [39mggplot2::ggplot(df, aes(x = median_income, y = home_value))
+[90m 2. [39m[1m[94mggplot2:::ggplot.function([39m[22mdf, aes(x = median_income, y = home_value)[1m[94m)[39m[22m
+"

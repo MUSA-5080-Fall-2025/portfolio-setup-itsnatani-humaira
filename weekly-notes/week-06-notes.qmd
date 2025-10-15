@@ -1,0 +1,98 @@
+---
+title: "Week 5 Notes - Linear Regression"
+date: "2025-10-06"
+---
+
+## Key Concepts Learned
+
+**Part 1: The Statistical Learning Framework**
+
+Statistical learning -> a set of approaches for estimating that relationship
+
+For any quantitative response Y and predictors X₁, X₂, … Xₚ:
+
+Y=f(X)+ϵ
+
+Where:
+f = the systematic information X provides about Y
+ε = random error (irreducible)
+
+f represents the true relationship between predictors and outcome
+- It’s fixed but unknown
+- It’s what we’re trying to estimate
+- Different X values produce different Y values through f
+
+Example:
+Y = median income
+X = population, education, poverty rate
+f = the way these factors systematically relate to income
+
+How do we estimate f?
+
+Parametric Methods
+- Make an assumption about the functional form (e.g., linear)
+- Reduces problem to estimating a few parameters
+- Easier to interpret
+- Assume f is linear: Y=β₀+β₁X
+
+Non-Parametric Methods
+- Don’t assume a specific form
+- More flexible
+- Require more data
+- Harder to interpret
+- No assumed form - let data determine shapes
+
+Parametric Approach: Linear Regression
+The assumption -> Relationship between X and Y is linear
+
+Y≈β0+β1X1+β2X2+...+βpXp
+
+The task: Estimate the β coefficients using our sample data
+The method: Ordinary Least Squares (OLS)
+
+Advantages:
+- Simple and interpretable
+- Well-understood properties
+- Works remarkably well for many problems
+- Foundation for more complex methods
+
+Limitations:
+- Assumes linearity
+- Sensitive to outliers
+- Makes several assumptions
+
+**Part 2: Two Different Goals**
+
+The same model serves different purposes:
+
+Inference
+- “Does education affect income?”
+- Focus on coefficients
+- Statistical significance matters
+- Understand mechanisms
+
+Prediction
+- “What’s County Y’s income?”
+- Focus on accuracy
+- Prediction intervals matter
+- Don’t need to understand why
+
+Null hypothesis is the claim in scientific research that the effect being studied does not exist.
+
+## Coding Techniques
+- Extract features based on spatial relationships:
+st_filter(), st_intersects(), st_touches(), st_within()
+- r predicate-structure Basic structure: 
+t_filter(data_to_filter, reference_geometry, .predicate = relationship)
+
+
+## Questions & Challenges
+- [What I didn't fully understand]
+- [Areas needing more practice]
+
+## Connections to Policy
+- [How this week's content applies to real policy work]
+
+## Reflection
+- [What was most interesting]
+- [How I'll apply this knowledge] 

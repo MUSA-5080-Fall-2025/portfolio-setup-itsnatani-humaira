@@ -1,0 +1,5 @@
+"0",""
+"0","# Join to tract boundaries"
+"0",""
+"0","census_tracts_joined <- census_tracts %>%"
+"0","  left_join(tract_data, by = ""GEOID"")"

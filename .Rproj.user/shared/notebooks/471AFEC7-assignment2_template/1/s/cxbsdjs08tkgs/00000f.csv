@@ -1,0 +1,7 @@
+"0","# Compare crimes inside vs outside school zones"
+"0","crime$in_school_zone <- lengths(st_intersects(crime, school_buffers)) > 0"
+"0",""
+"0","crime %>%"
+"0","  st_drop_geometry() %>%"
+"0","  count(in_school_zone) %>%"
+"0","  mutate(percent = n / sum(n) * 100)"

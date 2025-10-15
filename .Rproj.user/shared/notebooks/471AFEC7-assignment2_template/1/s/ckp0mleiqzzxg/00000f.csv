@@ -1,0 +1,6 @@
+"0","# Create underserved variable"
+"0","undeserved <- vulnerable_tracts_proj %>%"
+"0","  filter(dist_to_hospital_mi > 15)"
+"0",""
+"0",""
+"0",""

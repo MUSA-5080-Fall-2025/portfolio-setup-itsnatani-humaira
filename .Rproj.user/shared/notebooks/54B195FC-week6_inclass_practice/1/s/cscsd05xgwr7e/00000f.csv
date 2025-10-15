@@ -1,0 +1,9 @@
+"0","# Compare models
+cat(""Baseline R²:"", summary(baseline_model)$r.squared, ""\n"")
+"
+"1","Baseline R²:"
+"1"," "
+"1","0.1312636"
+"1"," "
+"1","
+"

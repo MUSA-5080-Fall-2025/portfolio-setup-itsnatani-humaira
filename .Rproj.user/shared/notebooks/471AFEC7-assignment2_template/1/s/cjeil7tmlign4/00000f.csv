@@ -1,0 +1,5 @@
+"0","# Overlay bike network with school zones"
+"0","bike_near_schools <- st_intersection(bike_network, school_buffers)"
+"0","crime_on_bikelanes <- st_join(crime, bike_near_schools, join = st_intersects, left = FALSE) %>%"
+"0","  distinct(geometry, .keep_all = TRUE)"
+"0",""

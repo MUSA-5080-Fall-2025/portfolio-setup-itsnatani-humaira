@@ -1,0 +1,3 @@
+"0",""
+"0","tract_data %>%"
+"0","  summarise(median_income = sum(median(median_household_incomeE, na.rm = TRUE)))"
