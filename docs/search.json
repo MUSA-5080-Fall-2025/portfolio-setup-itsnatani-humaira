@@ -845,5 +845,299 @@
     "title": "Week 5 Notes - Linear Regression",
     "section": "Reflection",
     "text": "Reflection\n\n[What was most interesting]\n[How I’ll apply this knowledge]"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#before-we-start-a-quick-note-on-your-submissions",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#before-we-start-a-quick-note-on-your-submissions",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Before We Start: A Quick Note on Your Submissions",
+    "text": "Before We Start: A Quick Note on Your Submissions\nWe noticed something in your homework submissions…\nMany of you have messy output in your rendered HTML files from tigris and tidycensus functions.\nExample of what we’re seeing:\nRetrieving data for the year 2022\n  |======================================================================| 100%\n  |======================================================================| 100%\nDownloading: 4.3 MB     \nDownloading: 3.7 MB\nThis clutters your professional report!"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#the-problem-progress-bars-in-rendered-output",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#the-problem-progress-bars-in-rendered-output",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "The Problem: Progress Bars in Rendered Output",
+    "text": "The Problem: Progress Bars in Rendered Output\nWhat’s happening:\nWhen you use tigris or tidycensus functions, they show download progress by default.\n\n\nIn your console (good!):\n\ntracts &lt;- get_acs(\n  geography = \"tract\",\n  variables = \"B01003_001\",\n  state = \"PA\",\n  geometry = TRUE\n)\n\nShows:\nGetting data from the 2018-2022 5-year ACS\n  |======| 100%\nThis is helpful when coding!\n\nIn your rendered HTML (bad!):\nAll those progress messages appear as ugly text in your final document.\nThis looks unprofessional and makes your work harder to read.\nSolution: Suppress progress messages in your code chunks"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#the-solution-add-progress-false",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#the-solution-add-progress-false",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "The Solution: Add progress = FALSE",
+    "text": "The Solution: Add progress = FALSE\nTwo ways to fix this:\nOption 1: In each function call\n\n# Add progress = FALSE to EVERY tigris/tidycensus call\ntracts &lt;- get_acs(\n  geography = \"tract\",\n  variables = \"B01003_001\",\n  state = \"PA\",\n  geometry = TRUE,\n  progress = FALSE  # &lt;-- Add this!\n)\n\nroads &lt;- roads(state = \"PA\", \n               county = \"Philadelphia\",\n               progress = FALSE)  # &lt;-- Add this!\n\nOption 2: Set globally at top of document (Recommended!)\n\n# Add this near the top of your .qmd after loading libraries\noptions(tigris_use_cache = TRUE)\noptions(tigris_progress = FALSE)  # Suppress tigris progress bars"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#action-required-re-render-before-final-grading",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#action-required-re-render-before-final-grading",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Action Required: Re-Render Before Final Grading",
+    "text": "Action Required: Re-Render Before Final Grading\n\n\n\n\n\n\n📝 To-Do Before We Grade\n\n\nPlease go back to your homework and:\n\nOpen your .qmd file\nAdd progress = FALSE to all get_acs(), get_decennial(), and tigris function calls\n\nOR add the global options at the top of your document\n\nRe-render your document (Click “Render” button)\nCheck that the HTML output is clean\nRe-submit on Canvas if needed (but it should all update on your website once you re-render!)\n\nDeadline: Before our next class meeting\nWhy this matters: We gotta look good!"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#agenda-overview",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#agenda-overview",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Agenda Overview",
+    "text": "Agenda Overview\nPart 1: Review & Connect\n\nWhere we’ve been and where we’re going\nThe regression workflow so far\n\nPart 2: Evaluating Model Quality\n\nTrain/test splits vs. cross-validation review\nSpatial patterns in errors\nIntroduction to spatial autocorrelation\n\nPart 3: Moran’s I as a Diagnostic\n\nUnderstanding spatial clustering\nCalculating and interpreting Moran’s I\nLocal vs. global measures\n\nBREAK (10 min)\nPart 4: Midterm Work Session (90+ min)"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#the-journey-so-far",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#the-journey-so-far",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "The Journey So Far",
+    "text": "The Journey So Far\nWeeks 1-3: Data foundations\n\nCensus data, tidycensus, spatial data basics\nVisualization and exploratory analysis\n\nWeek 5: Linear regression fundamentals\n\nY = f(X) + ε framework\nTrain/test splits, cross-validation\nChecking assumptions\n\nWeek 6: Expanding the toolkit\n\nCategorical variables and interactions\nSpatial features (buffers, kNN, distance)\nNeighborhood fixed effects"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#last-weeks-key-innovation",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#last-weeks-key-innovation",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Last Week’s Key Innovation",
+    "text": "Last Week’s Key Innovation\nYou learned to create spatial features:\nToday’s Question:\n\nHow do we know if our model still has spatial structure in its errors?\n\nIf errors are spatially clustered, we’re missing something important!"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#the-regression-workflow-updated",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#the-regression-workflow-updated",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "The Regression Workflow (Updated)",
+    "text": "The Regression Workflow (Updated)\n\n\nBuilding the model:\n\nVisualize relationships\nEngineer features\nFit the model\nEvaluate performance (RMSE, R²)\nCheck assumptions\n\n\nNEW: Spatial diagnostics:\n\nAre errors random or clustered?\nDo we predict better in some areas?\nIs there remaining spatial structure?\n\n\n\n\n\n\n\n\nWhy This Matters\n\n\nIf errors cluster spatially, it suggests:\n\nMissing spatial variables\nMisspecified relationships\nNon-stationarity (relationships vary across space)"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#what-are-model-errors",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#what-are-model-errors",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "What Are Model Errors?",
+    "text": "What Are Model Errors?\nPrediction error for observation i:\n\\[e_i = \\hat{y}_i - y_i\\]\nWhere:\n\n\\(\\hat{y}_i\\) = predicted value\n\\(y_i\\) = actual value\n\nIn our house price context:\n\n# Load packages and data\nlibrary(sf)\nlibrary(here)\nlibrary(tidyverse)\n\n# Load Boston housing data\nboston &lt;- read_csv(here(\"data/boston.csv\"))\n\n# Simple model: Predict price from living area\nbaseline_model &lt;- lm(SalePrice ~ LivingArea, data = boston)\nsummary(baseline_model)\n\n\nCall:\nlm(formula = SalePrice ~ LivingArea, data = boston)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-855962 -219491  -68291   55248 9296561 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 157968.32   35855.59   4.406 1.13e-05 ***\nLivingArea     216.54      14.47  14.969  &lt; 2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 563800 on 1483 degrees of freedom\nMultiple R-squared:  0.1313,    Adjusted R-squared:  0.1307 \nF-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16\n\nboston_test &lt;- boston %&gt;%\n  mutate(\n    predicted = predict(baseline_model, boston),\n    error = predicted - SalePrice,\n    abs_error = abs(error),\n    pct_error = abs(error) / SalePrice\n  )"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#good-errors-vs.-bad-errors",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#good-errors-vs.-bad-errors",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Good Errors vs. Bad Errors",
+    "text": "Good Errors vs. Bad Errors\n\n\n** Random errors (good)**\n\nNo systematic pattern\nScattered across space\nPrediction equally good everywhere\nModel captures key relationships\n\n\n** Clustered errors (bad)**\n\nSpatial pattern visible\nUnder/over-predict in areas\nModel misses something about location\nNeed more spatial features!\n\n\nHow do we test this?\nLook for spatial autocorrelation in the errors"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#toblers-first-law-revisited",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#toblers-first-law-revisited",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Tobler’s First Law (Revisited)",
+    "text": "Tobler’s First Law (Revisited)\n\n\n\n\n\n\nThe First Law of Geography\n\n\n“Everything is related to everything else, but near things are more related than distant things.”\n— Waldo Tobler (1970)\n\n\n\nApplied to house prices:\n\nNearby houses have similar prices\nNearby neighborhoods have similar characteristics\nCrime in one block affects adjacent blocks\n\nApplied to model errors:\n\nIf nearby houses have similar errors…\n…our model is missing a spatial pattern!\nNeed to add more spatial features or fixed effects"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#visualizing-error-patterns",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#visualizing-error-patterns",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Visualizing Error Patterns",
+    "text": "Visualizing Error Patterns\nMap your errors to see patterns:\n\nWhat to look for:\n\nBlue clusters (we under-predict)\nRed clusters (we over-predict)\nRandom scatter (good!)"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#scatter-plot-spatial-lag-of-errors",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#scatter-plot-spatial-lag-of-errors",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Scatter Plot: Spatial Lag of Errors",
+    "text": "Scatter Plot: Spatial Lag of Errors\nCreate the spatial lag:\n\nlibrary(spdep)\n\n# Define neighbors (5 nearest)\ncoords &lt;- st_coordinates(boston_test)\nneighbors &lt;- knn2nb(knearneigh(coords, k=5))\nweights &lt;- nb2listw(neighbors, style=\"W\")\n\n# Calculate spatial lag of errors\nboston_test$error_lag &lt;- lag.listw(weights, boston_test$error)\n\nThen plot:"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#what-is-morans-i",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#what-is-morans-i",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "What is Moran’s I?",
+    "text": "What is Moran’s I?\nMoran’s I measures spatial autocorrelation\nRange: -1 to +1\n\n+1 = Perfect positive correlation (clustering)\n0 = Random spatial pattern\n-1 = Perfect negative correlation (dispersion)\n\nFormula (look’s scary, but its so intuitive!):\n\\[I = \\frac{n \\sum_i \\sum_j w_{ij}(x_i - \\bar{x})(x_j - \\bar{x})}{\\sum_i \\sum_j w_{ij} \\sum_i (x_i - \\bar{x})^2}\\]\nWhere \\(w_{ij}\\) = spatial weight between locations i and j"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#worked-example-understanding-the-formula",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#worked-example-understanding-the-formula",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Worked Example: Understanding the Formula",
+    "text": "Worked Example: Understanding the Formula\n5 houses in a row, predicting sale prices:\n\n\n\nHouse\nActual Price\nPredicted Price\nError\n\n\n\n\nA\n$500k\n$400k\n+$100k\n\n\nB\n$480k\n$400k\n+$80k\n\n\nC\n$420k\n$400k\n+$20k\n\n\nD\n$350k\n$400k\n-$50k\n\n\nE\n$330k\n$400k\n-$70k\n\n\n\nMean error = +$16k\nThe question: Are errors for nearby houses similar to each other?"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#step-1-calculate-deviations-from-mean",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#step-1-calculate-deviations-from-mean",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Step 1: Calculate Deviations from Mean",
+    "text": "Step 1: Calculate Deviations from Mean\nSubtract the mean error from each house’s error:\n\n\n\nHouse\nError\nMean Error\nDeviation from Mean\n\n\n\n\nA\n+$100k\n+$16k\n+$84k\n\n\nB\n+$80k\n+$16k\n+$64k\n\n\nC\n+$20k\n+$16k\n+$4k\n\n\nD\n-$50k\n+$16k\n-$66k\n\n\nE\n-$70k\n+$16k\n-$86k\n\n\n\nPositive deviation = we over-predicted (actual &gt; predicted)\nNegative deviation = we under-predicted (actual &lt; predicted)"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#step-2-multiply-neighbor-deviations",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#step-2-multiply-neighbor-deviations",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Step 2: Multiply Neighbor Deviations",
+    "text": "Step 2: Multiply Neighbor Deviations\nFor each neighbor pair, multiply their deviations:\n\n\nNeighbor Pairs:\n\nA-B: \\((+84k) \\times (+64k) = +5,376\\)\nB-C: \\((+64k) \\times (+4k) = +256\\)\nC-D: \\((+4k) \\times (-66k) = -264\\)\nD-E: \\((-66k) \\times (-86k) = +5,676\\)\n\nSum of products = 11,044\n\nWhat does this mean?\nPositive products = similar neighbors - A-B: both over-predicted (both positive) - D-E: both under-predicted (both negative)\nNegative product = dissimilar neighbors\n- C-D: one over, one under\nThe pattern: High-error houses cluster together, low-error houses cluster together"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#the-intuition-behind-morans-i",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#the-intuition-behind-morans-i",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "The Intuition Behind Moran’s I",
+    "text": "The Intuition Behind Moran’s I\nThe formula is really just asking:\n\n“When I’m above/below average, are my neighbors also above/below average?”\n\nBreaking it down:\n\n\\((x_i - \\bar{x})\\) = How far is my house’s error from the mean?\n\\((x_j - \\bar{x})\\) = How far is my neighbor’s error from the mean?\nMultiply them:\n\nIf both positive or both negative → positive product (similar)\nIf opposite signs → negative product (dissimilar)\n\nSum across all neighbor pairs and normalize\n\nResult:\n\nLots of positive products → High Moran’s I (clustering)\nProducts near zero → Low Moran’s I (random)\nNegative products → Negative Moran’s I (rare with errors)"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#the-intuition-behind-morans-i-1",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#the-intuition-behind-morans-i-1",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "The Intuition Behind Moran’s I",
+    "text": "The Intuition Behind Moran’s I\nThe formula is really just asking:\n\n“When I’m above/below average, are my neighbors also above/below average?”\n\nBreaking it down:\n\n\\((x_i - \\bar{x})\\) = How far am I from the mean?\n\\((x_j - \\bar{x})\\) = How far is my neighbor from the mean?\nMultiply them:\n\nIf both positive or both negative → positive product (similar)\nIf opposite signs → negative product (dissimilar)\n\nSum across all neighbor pairs and normalize\n\nResult:\n\nLots of positive products → High Moran’s I (clustering)\nProducts near zero → Low Moran’s I (random)\nNegative products → Negative Moran’s I (rare with errors)"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#defining-neighbors",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#defining-neighbors",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Defining “Neighbors”",
+    "text": "Defining “Neighbors”\nDifferent ways to define spatial relationships:\n\n\nContiguity\n\nPolygons that share a border\nQueen vs. Rook\n\n\nDistance\n\nAll within X meters\nFixed threshold\n\n\nk-Nearest\n\nClosest k points\nAdaptive distance\n\n\nFor point data (houses), use k-nearest neighbors\n\n# Create 5-nearest neighbors\ncoords &lt;- st_coordinates(boston_test)\nnb &lt;- knn2nb(knearneigh(coords, k=5))\nweights &lt;- nb2listw(nb, style=\"W\")"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#calculating-spatial-lag",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#calculating-spatial-lag",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Calculating Spatial Lag",
+    "text": "Calculating Spatial Lag\nSpatial lag = average value of neighbors\n\n\n\n\n\n\nExample: 5 houses\n\n\n\n\n\nHouse\nSale Price\n2 Nearest\nSpatial Lag\n\n\n\n\nA\n$200k\nB, C\n$275k\n\n\nB\n$250k\nA, C\n$250k\n\n\nC\n$300k\nB, D\n$275k\n\n\nD\n$350k\nC, E\n$350k\n\n\nE\n$400k\nD\n$350k\n\n\n\n\n\n\nIn R:\n\nboston$price_lag &lt;- lag.listw(weights, boston$SalePrice)"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#computing-morans-i",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#computing-morans-i",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Computing Moran’s I",
+    "text": "Computing Moran’s I\nCalculate Moran’s I for your errors:\n\n# Test for spatial autocorrelation in errors\nmoran_test &lt;- moran.mc(\n  boston_test$error,        # Your errors\n  weights,                  # Spatial weights matrix\n  nsim = 999                # Number of permutations\n)\n\n# View results\nmoran_test$statistic         # Moran's I value\n\nstatistic \n0.7186593 \n\nmoran_test$p.value          # Is it significant?\n\n[1] 0.001\n\n\nInterpretation:\n\nI &gt; 0 and p &lt; 0.05 → Significant clustering\nI ≈ 0 → Random pattern (good!)\nI &lt; 0 → Dispersion (rare with errors)"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#visualizing-significance",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#visualizing-significance",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Visualizing Significance",
+    "text": "Visualizing Significance\nCompare observed I to random permutations:"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#what-morans-i-tells-you",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#what-morans-i-tells-you",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "What Moran’s I Tells You",
+    "text": "What Moran’s I Tells You\n\n\n\n\n\n\nDecision Framework\n\n\nIf Moran’s I is high (errors clustered):\n\nAdd more spatial features\n\nTry different buffer sizes\nInclude more amenities/disamenities\nCreate neighborhood-specific variables\n\nTry spatial fixed effects\n\nNeighborhood dummies\nGrid cell dummies\n\nConsider spatial regression models\n\nSpatial lag model\nSpatial error model\n(Advanced topic, not covered today)\n\n\n\n\n\nIf Moran’s I ≈ 0 (random errors):\n✅ Your model adequately captures spatial relationships!"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#what-about-spatial-lagerror-models",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#what-about-spatial-lagerror-models",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "“What About Spatial Lag/Error Models?”",
+    "text": "“What About Spatial Lag/Error Models?”\n“In my spatial statistics class, I learned about spatial lag and spatial error models for dealing with spatial autocorrelation. Why aren’t we using those here?”\n\n\nSpatial Econometrics Models\n(Spatial Statistics Class)\nSpatial Lag Model: \\(Y_i = \\rho WY + \\beta X_i + \\varepsilon\\)\nSpatial Error Model: \\(Y_i = \\beta X_i + \\lambda W\\varepsilon + \\xi\\)\nPurpose:\n\nCausal inference with spatial spillovers\nUnderstanding neighbor effects\nCorrect standard errors for hypothesis testing\nCross-sectional analysis\n\nWhen to use: Academic research on spillover effects, peer influence, regional economics\n\nPredictive Spatial Features\n(This Class)\nOur Approach: \\[Y_i = \\beta_0 + \\beta_1 X_i + \\beta_2(\\text{crimes}_{500ft}) + \\beta_3(\\text{dist}_{downtown}) + \\varepsilon_i\\]\nPurpose:\n\nOut-of-sample prediction\nForecasting new observations\n\nApplied machine learning\nGeneralization to new areas\n\nWhen to use: Real estate prediction, housing market forecasting, policy planning"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#why-not-spatial-lag-models-for-prediction",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#why-not-spatial-lag-models-for-prediction",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Why Not Spatial Lag Models for Prediction?",
+    "text": "Why Not Spatial Lag Models for Prediction?\n\n\nThe Problems with Spatial Lag for Prediction:\n1. Simultaneity Problem\n\nIncluding \\(WY\\) (neighbor prices) creates circular logic\nMy price affects neighbors → neighbors affect me\nOLS estimates are biased and inconsistent\n\n2. Prediction Paradox\n\nNeed neighbors’ prices to predict my price\nBut for new developments or future periods, those prices don’t exist yet\nCan’t generalize to truly new areas\n\n3. Data Leakage in CV\n\nGeographic CV holds out spatial regions\nSpatial lag “leaks” information from test set\nArtificially good performance that won’t hold\n\n\nOur Solution: Spatial Features of X (Not Y)\nInstead of modeling dependence in Y (prices), model proximity in X (predictors)\n\n\n\n❌ Spatial Lag\n✅ Our Approach\n\n\n\n\n“Near expensive houses”\n“Near low crime areas”\n\n\nUses neighbor prices\nUses neighbor characteristics\n\n\nCircular logic\nCausal mechanism\n\n\nCan’t predict new areas\nGeneralizes well\n\n\n\nIf Moran’s I shows clustered errors:\n✅ Add more spatial features (different buffers, more amenities)\n✅ Try neighborhood fixed effects\n✅ Use spatial cross-validation\n❌ Don’t add spatial lag of Y for prediction purposes\n\n\n\n\n\n\nThe Bottom Line\n\n\nBoth approaches are valid for different goals! Match method to purpose: inference → spatial lag/error models; prediction → spatial features."
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#quick-clarification-biased-vs.-inconsistent",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#quick-clarification-biased-vs.-inconsistent",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Quick Clarification: Biased vs. Inconsistent",
+    "text": "Quick Clarification: Biased vs. Inconsistent\nWhen we say OLS estimates are “biased and inconsistent” with spatial lag models, what does that mean?\n\n\nBiased Estimator\nDefinition: Expected value ≠ true parameter\n\\[E[\\hat{\\beta}] \\neq \\beta\\]\nWhat this means:\n\nOn average, across all possible samples, your estimate is systematically wrong\nDoesn’t get the right answer even in expectation\nMore data doesn’t fix it\n\nExample:\n\nTrue effect: β = 100\nYour estimates average to: 80\nYou’re systematically 20 units off\n\n\nInconsistent Estimator\nDefinition: Doesn’t converge to true value as n → ∞\n\\[\\hat{\\beta} \\not\\to \\beta \\text{ as } n \\to \\infty\\]\nWhat this means:\n\nEven with infinite data, you won’t get the right answer\nThe problem doesn’t go away with bigger samples\nViolates a fundamental property of good estimators\n\nExample: - n = 100 → estimate = 80 - n = 10,000 → estimate = 82 - n = 1,000,000 → estimate = 84 - Never reaches true value of 100"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#key-takeaways",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#key-takeaways",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Key Takeaways",
+    "text": "Key Takeaways\nSpatial autocorrelation in errors indicates model misspecification\nMoran’s I is a diagnostic tool:\n\nGlobal I: overall clustering\nMaps of residuals give clues to what you might be missing\n\nIterative improvement:\n\nDiagnose → Engineer features → Re-test → Repeat\nDocument what you try!"
+  },
+  {
+    "objectID": "labs/lab5/scripts/lecture/week7_slides.html#resources",
+    "href": "labs/lab5/scripts/lecture/week7_slides.html#resources",
+    "title": "Model Diagnostics & Spatial Autocorrelation",
+    "section": "Resources",
+    "text": "Resources\nSpatial autocorrelation: - https://mgimond.github.io/Spatial/spatial-autocorrelation.html\nspdep package: - https://r-spatial.github.io/spdep/"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#data-overview",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#data-overview",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Data Overview",
+    "text": "Data Overview\nOur Data Foundation\n\nPhiladelphia Property Sales (2023–2024)\nOver 17,000 residential transactions citywide capturing sale price, location, and property details.\nNeighborhood & Contextual Data\nCombined city (OpenDataPhilly) and census (ACS 2023) information on:\n\nCommunity factors: race, employment rate, median rent, education level, neighborhood\nPublic safety: proximity to vioelnt crime\nAccessibility: bike routes\nAmenities & services: parks, public schools, fire department, food retail"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#what-do-home-prices-look-like-in-philadelphia",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#what-do-home-prices-look-like-in-philadelphia",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "What Do Home Prices Look Like in Philadelphia?",
+    "text": "What Do Home Prices Look Like in Philadelphia?\n![Histogram of Sale Prices]\nKey Findings - Most homes sell for under $400,000\n- A small number of luxury properties push up the high end\n- Reflects strong housing inequality across neighborhoods"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#henry-please-edit-key-findings-and-slides-layout-for-the-three-visualization-slides",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#henry-please-edit-key-findings-and-slides-layout-for-the-three-visualization-slides",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "(Henry, please edit key findings and slides layout for the three visualization slides)",
+    "text": "(Henry, please edit key findings and slides layout for the three visualization slides)"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#where-are-expensive-homes-in-philadelphia",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#where-are-expensive-homes-in-philadelphia",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Where Are Expensive Homes in Philadelphia?",
+    "text": "Where Are Expensive Homes in Philadelphia?\n![Map of Sale Prices]\nKey Findings\n\nCenter City and Northwest Philadelphia command premium prices\n\nRiver Wards show emerging appreciation\n\nOuter neighborhoods remain most affordable"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#visualization-3",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#visualization-3",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Visualization 3",
+    "text": "Visualization 3\n(Add figure or placeholder content here)"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#how-does-model-performance-improve",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#how-does-model-performance-improve",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "How Does Model Performance Improve?",
+    "text": "How Does Model Performance Improve?\n\n\n\nModel\nCV RMSE\nR²\n\n\n\n\nStructural Only\n139,097\n0.67\n\n\nSpatial\n111,374\n0.79\n\n\nFixed Effects\n95,370\n0.85\n\n\nHyper-model\n65,382\n0.93\n\n\n\nBottom Line\nEach additional data layer improves accuracy, with neighborhood / market-value features producing the largest jump (lowest RMSE and highest R²)."
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#what-drives-the-improvement",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#what-drives-the-improvement",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "What Drives the Improvement?",
+    "text": "What Drives the Improvement?\n\nFrom taking into accounts only the structural/building quality variables in our first model;\nAdding Spatial Data accounts for proximity to parks, public schools, food retail, and violent crime.\nAdding Census & Socioeconomic Context captures income, education, and housing quality\n\nAdding Neighborhood Fixed Effects controls for unobserved local traits\n\nGrouping Small Neighborhoods stabilizes estimates where data are sparse (sales&lt;10)\nIncluding Market Value Benchmarks aligns predictions with broader price trends\n\nTakeaway:\nPhiladelphia’s housing market is highly localized — accuracy improves most when models reflect neighborhood structure and market context. The Hyper model which optimized by groups small neighborhoods, is more parsimonious while maintaining high predictive performance."
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#best-models",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#best-models",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Best Models",
+    "text": "Best Models\n\n\n\nModel\nRMSE ($)\nR²\n\n\n\n\nModel 3: Fixed Effects\n$95,370\n0.85\n\n\nModel 4: Hyper Model\n$65,382\n0.93\n\n\n\nBoth models capture structural, spatial, census, and socioeconomic factors,\nwhile incorporating neighborhood effects to reflect local market variation.\nKey Insight:\nAdding small-neighborhood grouping and market value signals delivers a major leap in accuracy — boosting R² from 0.85 → 0.93. By going down to the block level, our model captures fine-grained local variation, showing that neighborhood and market context are essential for fair property assessments."
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#key-findings",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#key-findings",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Key Findings",
+    "text": "Key Findings\nModel Accuracy RMSE = $65,382 & R² = 0.93\nTop Predictors - Neighborhoods (Prestige/unobserved characteristics) - Market Value\n(Mohamed, Please interpret coefficient)"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#hardest-to-predict",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#hardest-to-predict",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Hardest To Predict",
+    "text": "Hardest To Predict\n (Jinheng, please update from this slide to end) —"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#policy-recommendations",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#policy-recommendations",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Policy Recommendations",
+    "text": "Policy Recommendations\nKey Actions - ✓ Current AVM undervalues transit-accessible properties\n- ✓ Model struggles in rapidly gentrifying neighborhoods\n- ✓ Incorporate updated neighborhood effects to improve fairness\n- ✓ Use regular data refreshes to maintain accuracy over time"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#limitations-next-steps",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#limitations-next-steps",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Limitations & Next Steps",
+    "text": "Limitations & Next Steps\nLimitations - Placeholder text — refine with data or discussion\nNext Steps - ✓ A\n- ✓ B\n- ✓ C"
+  },
+  {
+    "objectID": "assignments/midterm/presentation/Midterm_slides_v2.html#thank-you",
+    "href": "assignments/midterm/presentation/Midterm_slides_v2.html#thank-you",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "THANK YOU",
+    "text": "THANK YOU"
   }
 ]

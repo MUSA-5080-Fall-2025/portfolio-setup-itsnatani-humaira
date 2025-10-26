@@ -66,9 +66,9 @@ library(here)
 census_api_key(Sys.getenv("your_API_key"))
 
 # Load spatial data
-pa_counties <- st_read(here("C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/assignments/assignment2/scripts/data/Pennsylvania_County_Boundaries.shp"))
-hospitals <- st_read(here("C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira/assignments/assignment2/scripts/data/hospitals.geojson"))
-census_tracts <- tracts(state = "PA", cb = TRUE)
+pa_counties <- st_read(here("assignments/assignment2/scripts/data/Pennsylvania_County_Boundaries.shp"))
+hospitals <- st_read(here("assignments/assignment2/scripts/data/hospitals.geojson"))
+census_tracts <- tracts(state = "PA", cb = TRUE, progress = FALSE)
 
 # Standardize CRS
 st_crs(pa_counties)

@@ -1,0 +1,448 @@
+---
+title: "MUSA 5080 Midterm"
+subtitle: "Single-Family Home Price Prediction in Philadelphia"
+author: "Jed Chew"
+date: today
+format: 
+  html:
+    code-fold: false
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 80
+---
+
+## MUSA 5080 Midterm
+
+**Goal:** Predict 2023-2024 home sale prices accurately while communicating
+findings clearly to a policy audience.
+
+```{r, echo = FALSE, include = FALSE}
+# Load required packages
+library(tidyverse)
+library(tidycensus)
+library(broom)
+library(janitor)
+library(sf)
+library(tigris)
+library(scales)
+library(patchwork)
+library(RColorBrewer)
+library(units)
+library(knitr)
+library(caret)
+library(car)
+library(ggcorrplot)
+
+# Set Census API key
+census_api_key("fe841b7ef0aa73d9579f0517bd1c8f26d33c789b")
+
+# Get working directory
+getwd()
+
+# Suppress Warnings
+options(warn=-1)
+```
+
+## Part 1: Data Cleaning & Preparation
+
+### Primary Dataset: [Property Sales](https://metadata.phila.gov/#home/datasetdetails/5543865f20583086178c4ee5/representationdetails/55d624fdad35c7e854cb21a4/)
+
+This dataset contains actual property sales with:
+
+-   Sale price
+-   Sale date
+-   Property characteristics (bedrooms, bathrooms, sq ft, etc.)
+-   Property location (address, coordinates)
+
+### Step 1: Load and clean Philadelphia sales data
+
+-   Clean it (missing values, outliers, data errors)
+-   Filter to 2023-2024 residential sales only
+
+```{r}
+sales_data <- read_csv("data/clean_data.csv")
+head(sales_data)
+glimpse(sales_data)
+```
+
+### Step 2: Load Secondary Data
+
+-   Census data (tidycensus):
+
+-   Spatial amenities (OpenDataPhilly)
+
+-   Join to sales data appropriately
+
+-   Make sure you have the correct CRS!
+
+--------------------------------------------------------------------------------
+
+### Step 3: Feature Engineering
+
+1.  **Buffer-based features**:
+
+    -   Parks within 500ft, 1000ft
+
+    -   Transit stops within 400ft
+
+    -   Schools, crime, etc.
+
+2.  **k-Nearest Neighbor features**:
+
+    -   Average distance to k nearest parks, transit, etc.
+
+3.  **Census variables**:
+
+    -   Join median income, education, poverty, etc.
+
+4.  **Interaction terms**:
+
+    -   Theoretically motivated combinations
+
+--------------------------------------------------------------------------------
+
+### Step 4: Exploratory Data Analysis
+
+**Create at least 5 professional visualizations:**
+
+1.  Distribution of sale prices (histogram)
+
+2.  Geographic distribution (map)
+
+3.  Price vs. structural features (scatter plots)
+
+4.  Price vs. spatial features (scatter plots)
+
+5.  One creative visualization
+
+```{r}
+# Create New Columns for Further Cleaning
+sales_data <- sales_data |> 
+  mutate(psf = round(sale_price / total_livable_area, 2),
+         value_multiple = round(market_value / sale_price, 2)) |> 
+  arrange(psf)
+sales_data
+colnames(sales_data)
+```
+
+```{r}
+# Histogram of Price
+ggplot(sales_data, aes(x = sale_price)) +
+  geom_histogram(fill = "lightblue", bins= 500) +
+  labs(title = "Histogram of Price", x = "Price", y = "Frequency")
+
+# Log Sales Price
+log_sales_data <- mutate(sales_data, log_price = log(sale_price))
+ggplot(log_sales_data, aes(x = log_price)) +
+  geom_histogram(fill = "lightblue", bins= 500) +
+  labs(title = "Histogram of Price", x = "Log(Price)", y = "Frequency")
+```
+
+```{r}
+# Further Cleaning
+select_data <- sales_data |> 
+  select(year_built, number_of_bathrooms, number_of_bedrooms, basements, 
+         fireplaces, garage_spaces,
+         general_construction, interior_condition, exterior_condition, 
+         census_tract, neigh_name, 
+         value_multiple, market_value, sale_price, total_area, total_livable_area, 
+         psf, violent_2blocks, petty_1block, dist_park_mi, 
+         vacancy_rate, med_gross_rent, med_hh_income, pct_ba_plus, 
+         pct_white, pct_black, pct_hispanic, pct_asian,
+         foodretail_1mi_count, 
+         dist_school_public_ft, dist_school_charter_ft, 
+         pct_age_25_44, pct_age_65plus,
+         poverty_rate, unemployment_rate) |> 
+  filter(number_of_bathrooms > 0, number_of_bedrooms > 0) |> 
+  mutate(age = 2024 - year_built,
+         basements = dplyr::recode(trimws(as.character(basements)),
+                              "0"="0","A"="1","B"="2","C"="3","D"="4","E"="5",
+                              "F"="6","G"="7","H"="8","I"="9"),
+         basements = as.integer(basements)) |> 
+  rename(
+    baths      = number_of_bathrooms,
+    beds       = number_of_bedrooms,
+    construction = general_construction,
+    interior   = interior_condition,
+    exterior   = exterior_condition,
+    garage     = garage_spaces,
+    tract      = census_tract,
+    neigh      = neigh_name,
+    mkt_value  = market_value,
+    area       = total_area,
+    liv_area   = total_livable_area
+  )
+
+# Intuition: market value should not deviate substantially 
+# from the sale price
+value_range <- select_data |> 
+  summarize(
+    q1 = quantile(value_multiple, 0.25, na.rm = TRUE),
+    q3 = quantile(value_multiple, 0.75, na.rm = TRUE),
+    iqr = q3 - q1,
+    lower = q1 - 1.5 * iqr,
+    upper = q3 + 1.5 * iqr)
+value_range
+
+# Intuition: psf outliers are likely non-market transactions
+psf_range <- select_data |> 
+  summarize(
+    q1 = quantile(psf, 0.25, na.rm = TRUE),
+    q3 = quantile(psf, 0.75, na.rm = TRUE),
+    iqr = q3 - q1,
+    lower = q1 - 1.5 * iqr,
+    upper = q3 + 1.5 * iqr)
+psf_range  
+
+clean_data <- select_data |> 
+  filter(
+    liv_area > 500,
+    area > 500,
+    between(psf, 40, 800),
+    between(value_multiple, 0.4, 2.0)
+  ) |> 
+  mutate(across(where(is.numeric), ~ round(.x, 2))) |> 
+  drop_na() |> 
+  arrange(liv_area)
+clean_data
+```
+
+```{r}
+# Quick Category Check 
+count(clean_data, neigh)
+count(clean_data, interior)
+count(clean_data, exterior)
+count(clean_data, basements)
+```
+
+**Metadata: Interior and Exterior Condition**
+
+1.  Newer Construction
+2.  Rehabilitated
+3.  Above Average
+4.  Rehabilitated
+5.  Average
+6.  Below Average
+7.  Vacant
+
+**Metadata: Basements**
+
+0.  None
+1.  A = Full Finished
+2.  B = Full Semi-Finished
+3.  C = Full Unfinished
+4.  D = Full
+5.  E = Partial Finished
+6.  F = Partial Semi-Finished
+7.  G = Partial Unfinished
+8.  H = Partial - Unknown Finish
+9.  I = Unknown Size - Finished
+
+### Step 5: Summary Statistics
+
+```{r}
+# Calculate Summary Stats
+stats_df <- clean_data %>%
+  summarise(across(
+    where(is.numeric),
+    list(
+      mean   = ~ mean(.x, na.rm = TRUE),
+      median = ~ median(.x, na.rm = TRUE),
+      sd     = ~ sd(.x, na.rm = TRUE),
+      q25    = ~ as.numeric(quantile(.x, 0.25, na.rm = TRUE)),
+      q75    = ~ as.numeric(quantile(.x, 0.75, na.rm = TRUE))
+    ),
+    .names = "{.col}__{.fn}"
+  )) %>%
+  pivot_longer(everything(),
+               names_to = c("variable","stat"),
+               names_sep = "__",
+               values_to = "value") %>%
+  pivot_wider(names_from = stat, values_from = value) %>%
+  mutate(across(-variable, ~ round(.x, 2))) %>%
+  arrange(variable)
+
+# Table Output
+library(kableExtra)
+kbl(stats_df,
+    caption   = "Summary Statistics",
+    col.names = c("Variable","Mean","Median","SD","Q25","Q75"),
+    align     = c("l","r","r","r","r","r"),
+    booktabs  = TRUE
+) %>%
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped","hover","condensed")) %>%
+  add_header_above(c(" " = 1, "Statistics" = 5))
+```
+
+**Correlation Matrix**
+
+```{r}
+hedonic_vars <- clean_data[, c("age", "baths", "beds", "basements", "interior", "exterior", "area", "liv_area")]
+
+cor_matrix <- cor(hedonic_vars, use = "pairwise.complete.obs", method = "pearson")
+
+ggcorrplot(cor_matrix,
+           method = "square",
+           type = "lower",
+           lab = TRUE,
+           lab_size = 3,
+           colors = c("#a4133c", "white", "#a4133c"))+
+    labs(title = "Correlation Matrix for Hedonic Variables") +
+    theme(plot.subtitle = element_text(size = 9, face = "italic"),
+        plot.title = element_text(size = 12, face = "bold"),
+        axis.text.x = element_text(size = 7),
+        axis.text.y = element_text(size = 7),
+        axis.title = element_text(size = 8))
+```
+
+```{r}
+spatial_vars <- clean_data[, c(
+  "violent_2blocks", "petty_1block", "dist_park_mi",
+  "vacancy_rate", "med_gross_rent", "med_hh_income", "pct_ba_plus",
+  "pct_white", "pct_black", "pct_hispanic", "pct_asian",
+  "foodretail_1mi_count",
+  "dist_school_public_ft", "dist_school_charter_ft",
+  "pct_age_25_44", "pct_age_65plus",
+  "poverty_rate", "unemployment_rate"
+)]
+
+spatial_matrix <- cor(spatial_vars, use = "pairwise.complete.obs", method = "pearson")
+
+ggcorrplot(spatial_matrix,
+           method = "square",
+           type = "lower",
+           lab = TRUE,
+           lab_size = 3,
+           colors = c("#a4133c", "white", "#a4133c"))+
+    labs(title = "Correlation Matrix for Spatial Variables") +
+    theme(plot.subtitle = element_text(size = 9, face = "italic"),
+        plot.title = element_text(size = 12, face = "bold"),
+        axis.text.x = element_text(size = 7),
+        axis.text.y = element_text(size = 7),
+        axis.title = element_text(size = 8))
+```
+
+--------------------------------------------------------------------------------
+
+## Part 2: Model Building & Evaluation using Cross-Validation
+
+--------------------------------------------------------------------------------
+
+Evaluate the model fit and predictive reliability using key metrics such as Mean
+Absolute Error (MAE), Root Mean Squared Error (RMSE), and R-squared.
+
+```{r}
+clean_data$neigh <- as.factor(clean_data$neigh)
+clean_data$interior <- as.factor(clean_data$interior)
+clean_data$exterior <- as.factor(clean_data$exterior)
+clean_data$basements <- as.factor(clean_data$basements)
+                                 
+count(clean_data, neigh)
+count(clean_data, interior)
+count(clean_data, exterior)
+count(clean_data, basements)
+```
+
+```{r}
+set.seed(5080) # Set seed for reproducibility
+ctrl <- trainControl(method = "cv", number = 10) #10-Fold CV
+
+# Model 1: Structural
+cv_m1 <- train(
+  sale_price ~ beds + baths + basements + interior + exterior + liv_area + poly(age, 2),
+  data = clean_data, method = "lm", trControl = ctrl
+)
+
+# Model 2: + Spatial
+cv_m2 <- train(
+  sale_price ~ beds + baths + basements + interior + exterior + liv_area + poly(age, 2) +
+  dist_park_mi + foodretail_1mi_count + dist_school_public_ft
+  + vacancy_rate + med_gross_rent + med_hh_income + pct_ba_plus + pct_black + pct_white
+  + poverty_rate + unemployment_rate + pct_age_25_44 + pct_age_65plus,
+  data = clean_data, method = "lm", trControl = ctrl
+)
+
+# Model 3: + Neighborhood Fixed Effects
+cv_m3 <- train(
+  sale_price ~ beds + baths + basements + interior + exterior + liv_area + poly(age, 2) +
+  dist_park_mi + foodretail_1mi_count + dist_school_public_ft +
+  vacancy_rate + med_gross_rent + med_hh_income + pct_ba_plus + pct_black + pct_white +
+  poverty_rate + unemployment_rate + pct_age_25_44 + pct_age_65plus +
+  neigh, 
+  data = clean_data, method = "lm", trControl = ctrl
+)
+
+# Model 4: + Small Neighborhoods + Mkt Value
+clean_data <- clean_data |> 
+  add_count(neigh) |> 
+  mutate(
+    neigh_cv = if_else(
+      n < 10,                       # If fewer than 10 sales
+      "Small_Neighborhoods",        # Group them
+      as.character(neigh)           # Keep original
+    ),
+    neigh_cv = as.factor(neigh_cv)
+  )
+
+cv_m4 <- train(
+  sale_price ~ beds + baths + basements + interior + exterior + liv_area + poly(age, 2) +
+  violent_2blocks + dist_park_mi + foodretail_1mi_count + dist_school_public_ft + 
+  vacancy_rate + med_gross_rent + med_hh_income + pct_ba_plus + pct_black + pct_white +
+  poverty_rate + unemployment_rate + pct_age_25_44 + pct_age_65plus + 
+  mkt_value +
+  neigh_cv, 
+  data = clean_data, method = "lm", trControl = ctrl
+)
+
+# Model 5: + Simpler + Mkt Value
+cv_m5 <- train(
+  sale_price ~ beds + baths + basements + interior + exterior + liv_area + poly(age, 2) +
+  dist_park_mi + foodretail_1mi_count + dist_school_public_ft +
+  mkt_value +
+  neigh_cv,  
+  data = clean_data, method = "lm", trControl = ctrl
+)
+
+# Model 6: Simpler Only
+cv_m6 <- train(
+  sale_price ~ beds + baths + basements + interior + exterior + liv_area + poly(age, 2) +
+  dist_park_mi + foodretail_1mi_count + dist_school_public_ft + 
+  neigh_cv,  
+  data = clean_data, method = "lm", trControl = ctrl
+)
+
+# Compare
+data.frame(
+  Model = c("Structural", "Spatial", "Fixed Effects", "Small Neighborhoods + Mkt Value", "Simpler + Mkt Value", "Simpler Only"),
+  Rsquared = c(cv_m1$results$Rsquared, cv_m2$results$Rsquared, cv_m3$results$Rsquared, 
+               cv_m4$results$Rsquared, cv_m5$results$Rsquared, cv_m6$results$Rsquared),
+  RMSE = c(cv_m1$results$RMSE, cv_m2$results$RMSE, cv_m3$results$RMSE, 
+           cv_m4$results$RMSE, cv_m5$results$RMSE, cv_m6$results$RMSE),
+  MAE = c(cv_m1$results$MAE, cv_m2$results$MAE, cv_m3$results$MAE, 
+          cv_m4$results$MAE, cv_m5$results$MAE, cv_m6$results$MAE)
+)
+```
+
+```{r}
+lm_model3 <- cv_m3$finalModel
+vif_model3 <- vif(lm_model3)
+vif_m3 <- data.frame(Variable = names(vif_model3), # convert to data frame
+                     VIF = as.vector(vif_model3))
+kable(vif_m3, caption = "Variance Inflation Factors for Model 3: Fixed Effects")
+```
+
+```{r}
+lm_model5 <- cv_m5$finalModel
+vif_model5 <- vif(lm_model5)
+vif_m5 <- data.frame(Variable = names(vif_model5), # convert to data frame
+                     VIF = as.vector(vif_model5))
+kable(vif_m5, caption = "Variance Inflation Factors for Model 5: Simpler + Mkt Value")
+```
