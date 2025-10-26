@@ -30,7 +30,7 @@ website:
             text: lab 1
           - href: labs/lab2/scripts/week4_inclass_practice.qmd
             text: lab 2
-          - href: labs/lab3/scripts/week5_inclass_practice.qmd
+          - href: labs/lab3/scripts/week5-complete-slides.qmd
             text: lab 3
           - href: labs/lab4/scripts/week6_inclass_practice.qmd
             text: lab 4
