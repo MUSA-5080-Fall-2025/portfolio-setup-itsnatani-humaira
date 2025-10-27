@@ -2006,4 +2006,4 @@ We also see that tracts with higher median household income sell for more, and t
 - Fixed effects hide macro gap but don’t solve it. Neighborhood fixed effects let us ask “why does this house sell for more than that house within the same neighborhood?” That’s exactly what we want for local pricing. But fixed effects also absorb neighborhood-level disparities themselves. That means we’re not modeling why one neighborhood as a whole appraises lower than another neighborhood, which is also an equity question — we’re holding that gap constant.
 
 **Declaration**
-ChatGPT was used to amend language errors and allow for more seamless sentence sturcture/syntax. It was also used to aid in certain repetitive coding tasks. All of which were double checked for accuracy and at times redone by another team memebr to ensure ownership of both content and code.
+ChatGPT was used to amend language errors and allow for more seamless sentence structure/syntax. It was also used to aid in certain repetitive coding tasks. All of which were double checked for accuracy and at times redone by another team member to ensure ownership of both content and code.
