@@ -1,7 +1,0 @@
-"0","crime.sf <- bostonCrimes %>%
-  st_as_sf(coords = c(""Long"", ""Lat""), crs = ""EPSG:4326"") %>%
-  st_transform('ESRI:102286')  # MA State Plane (feet)
-"
-"2","Error in st_as_sf.data.frame(., coords = c(""Long"", ""Lat""), crs = ""EPSG:4326"") : 
-  missing values in coordinates not allowed
-"

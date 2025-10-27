@@ -107,6 +107,7 @@ library(patchwork)
 library(forcats)
 library(purrr)
 library(zoo)
+library(kableExtra)
 
 options(warn = -1)
 options(tigris_use_cache = TRUE)
@@ -1098,7 +1099,7 @@ ggplot(sales_data, aes(x = sale_price)) +
 #| fig.height: 10
 
 # Re-create the neighborhood layer from the URL
-inherits(clean_data, "sf")
+
 neigh_url <- "https://raw.githubusercontent.com/opendataphilly/open-geo-data/refs/heads/master/philadelphia-neighborhoods/philadelphia-neighborhoods.geojson"
 
 neigh <- sf::read_sf(neigh_url)
@@ -1262,6 +1263,7 @@ figure_3_structural
 #| label: Spatial-features
 #| fig.width: 10
 #| fig.height: 8
+#| progress: false
 
 # Build plotting data frame for spatial/context features
 plot_spatial <- sales_data %>%
@@ -1366,6 +1368,7 @@ figure_4_spatial
 #| label: creative-bubble-map
 #| fig.width: 10
 #| fig.height: 8
+#| progress: false
 
 acs_vars <- c(
   med_income   = "B19013_001",
@@ -1490,27 +1493,71 @@ select_data <- sales_data |>
 #| warning: false
 #| Results: false
 
-# Intuition: market value should not deviate substantially 
-# from the sale price
+# Intuition: market value should not deviate substantially from the sale price
 value_range <- select_data |> 
   summarize(
-    q1 = quantile(value_multiple, 0.25, na.rm = TRUE),
-    q3 = quantile(value_multiple, 0.75, na.rm = TRUE),
-    iqr = q3 - q1,
+    q1    = quantile(value_multiple, 0.25, na.rm = TRUE),
+    q3    = quantile(value_multiple, 0.75, na.rm = TRUE),
+    iqr   = q3 - q1,
     lower = q1 - 1.5 * iqr,
-    upper = q3 + 1.5 * iqr)
-value_range
+    upper = q3 + 1.5 * iqr
+  )
+
+# Kable table for value_range
+value_range |> 
+  mutate(
+    q1    = round(q1, 2),
+    q3    = round(q3, 2),
+    iqr   = round(iqr, 2),
+    lower = round(lower, 2),
+    upper = round(upper, 2)
+  ) |>
+  kable(
+    caption = "Flag thresholds for Value Multiple (Assessed Value ÷ Sale Price)",
+    col.names = c("Q1", "Q3", "IQR", "Lower Bound", "Upper Bound"),
+    align = "c",
+    digits = 2,
+    format = "html"
+  ) |>
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 13
+  )
 
 # Intuition: psf outliers are likely non-market transactions
 psf_range <- select_data |> 
   summarize(
-    q1 = quantile(psf, 0.25, na.rm = TRUE),
-    q3 = quantile(psf, 0.75, na.rm = TRUE),
-    iqr = q3 - q1,
+    q1    = quantile(psf, 0.25, na.rm = TRUE),
+    q3    = quantile(psf, 0.75, na.rm = TRUE),
+    iqr   = q3 - q1,
     lower = q1 - 1.5 * iqr,
-    upper = q3 + 1.5 * iqr)
-psf_range  
+    upper = q3 + 1.5 * iqr
+  )
 
+# Kable table for psf_range
+psf_range |>
+  mutate(
+    q1    = round(q1, 2),
+    q3    = round(q3, 2),
+    iqr   = round(iqr, 2),
+    lower = round(lower, 2),
+    upper = round(upper, 2)
+  ) |>
+  kable(
+    caption = "Flag thresholds for psf (Price per Square Foot)",
+    col.names = c("Q1", "Q3", "IQR", "Lower Bound", "Upper Bound"),
+    align = "c",
+    digits = 2,
+    format = "html"
+  ) |>
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 13
+  )
+
+# Clean data used for modeling / mapping
 clean_data <- select_data |> 
   filter(
     liv_area > 500,
@@ -1519,9 +1566,22 @@ clean_data <- select_data |>
     between(value_multiple, 0.4, 2.0)
   ) |> 
   mutate(across(where(is.numeric), ~ round(.x, 2))) |> 
-  drop_na() |> 
+  tidyr::drop_na() |> 
   arrange(liv_area)
-clean_data
+
+# Nicely show the first ~10 rows
+clean_data |> 
+  slice_head(n = 10) |>
+  kable(
+    caption = "Cleaned transaction data (first 10 rows after filters)",
+    align = "c",
+    format = "html"
+  ) |>
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 12
+  )
 
 ```
 
@@ -1613,15 +1673,68 @@ cv_m6 <- train(
 )
 
 # Compare
-data.frame(
-  Model = c("Structural", "Spatial", "Fixed Effects", "Small Neighborhoods + Mkt Value", "Simpler + Mkt Value", "Simpler Only"),
-  Rsquared = c(cv_m1$results$Rsquared, cv_m2$results$Rsquared, cv_m3$results$Rsquared, 
-               cv_m4$results$Rsquared, cv_m5$results$Rsquared, cv_m6$results$Rsquared),
-  RMSE = c(cv_m1$results$RMSE, cv_m2$results$RMSE, cv_m3$results$RMSE, 
-           cv_m4$results$RMSE, cv_m5$results$RMSE, cv_m6$results$RMSE),
-  MAE = c(cv_m1$results$MAE, cv_m2$results$MAE, cv_m3$results$MAE, 
-          cv_m4$results$MAE, cv_m5$results$MAE, cv_m6$results$MAE)
-)
+model_compare <- data.frame(
+  Model = c(
+    "Structural",
+    "Spatial",
+    "Fixed Effects",
+    "Small Neighborhoods + Mkt Value",
+    "Simpler + Mkt Value",
+    "Simpler Only"
+  ),
+  Rsquared = c(
+    cv_m1$results$Rsquared,
+    cv_m2$results$Rsquared,
+    cv_m3$results$Rsquared,
+    cv_m4$results$Rsquared,
+    cv_m5$results$Rsquared,
+    cv_m6$results$Rsquared
+  ),
+  RMSE = c(
+    cv_m1$results$RMSE,
+    cv_m2$results$RMSE,
+    cv_m3$results$RMSE,
+    cv_m4$results$RMSE,
+    cv_m5$results$RMSE,
+    cv_m6$results$RMSE
+  ),
+  MAE = c(
+    cv_m1$results$MAE,
+    cv_m2$results$MAE,
+    cv_m3$results$MAE,
+    cv_m4$results$MAE,
+    cv_m5$results$MAE,
+    cv_m6$results$MAE
+  )
+) |>
+  mutate(
+    R2 = round(Rsquared, 3),
+    RMSE = round(RMSE, 0),
+    MAE = round(MAE, 0)
+  ) |>
+  select(
+    Model,
+    `R² (CV)` = R2,
+    `RMSE (CV)` = RMSE,
+    `MAE (CV)` = MAE
+  )
+
+model_compare |>
+  kable(
+    caption = "10-fold CV performance across model specifications",
+    align = c("l", "c", "c", "c"),
+    format = "html"
+  ) |>
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 13
+  ) |>
+  row_spec(1, bold = TRUE) |>
+  column_spec(1, width = "8cm") |>
+  add_header_above(
+    c(" " = 1, "Out-of-Sample Fit Metrics" = 3)
+  )
 
 ```
 
@@ -1654,9 +1767,9 @@ fe_m4 <- feols(
 # Pretty table (no neighborhood FE dummies will show)
 
 modelsummary(
-  list("Final Model (FE absorbed)" = fe_m4),
+  list("Fourth Model (FE absorbed + MKT Value)" = fe_m4),
   gof_omit  = 'IC|Adj|Log|F',
-  statistic = "({std.error})",     # <-- this is the important change
+  statistic = "({std.error})",     
   estimate  = "{estimate}{stars}",
   stars     = c('*'=.1,'**'=.05,'***'=.01),
   output    = "markdown"
