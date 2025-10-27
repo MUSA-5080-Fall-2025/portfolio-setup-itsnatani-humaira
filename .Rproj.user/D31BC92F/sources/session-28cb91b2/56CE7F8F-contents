@@ -1380,7 +1380,8 @@ acs_tracts <- get_acs(
   year      = 2023,
   survey    = "acs5",
   geometry  = TRUE,
-  cache_table = TRUE
+  cache_table = TRUE,
+  progress = FALSE
 ) %>%
   select(GEOID, variable, estimate, geometry) %>%
   st_transform(st_crs(geo_clean)) %>%

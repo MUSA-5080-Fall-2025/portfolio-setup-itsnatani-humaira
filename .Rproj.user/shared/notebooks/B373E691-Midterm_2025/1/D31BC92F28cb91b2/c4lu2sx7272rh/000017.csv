@@ -1,0 +1,18 @@
+"0","acs_tracts <- get_acs(
+  geography = ""tract"",
+  state     = ""PA"",
+  county    = ""Philadelphia"",
+  variables = acs_vars,
+  year      = 2023,
+  survey    = ""acs5"",
+  geometry  = TRUE,
+  cache_table = TRUE,
+  progress = FALSE
+) %>%
+  select(GEOID, variable, estimate, geometry) %>%
+  st_transform(st_crs(geo_clean)) %>%
+  pivot_wider(names_from = variable, values_from = estimate) %>%
+  st_as_sf()
+"
+"2","Error: object 'geo_clean' not found
+"
