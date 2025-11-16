@@ -1,0 +1,4 @@
+"0","local_moran <- localmoran(residuals, lw)
+"
+"2","Error in localmoran(residuals, lw) : is.vector(x) is not TRUE
+"
