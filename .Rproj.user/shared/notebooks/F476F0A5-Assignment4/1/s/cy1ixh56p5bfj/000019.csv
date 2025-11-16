@@ -1,0 +1,5 @@
+"0","# Apply to abandoned cars
+fishnet <- calculate_local_morans(fishnet, ""abandoned_cars"", k = 5)
+"
+"2","Error in localmoran(data[[variable]], weights) : is.vector(x) is not TRUE
+"

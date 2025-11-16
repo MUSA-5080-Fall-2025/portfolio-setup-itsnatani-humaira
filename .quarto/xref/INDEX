@@ -58,5 +58,35 @@
   },
   "midterm/slides/Midterm_slides_v3.qmd": {
     "Midterm_slides_v3.html": "70c59066"
+  },
+  "assignments/assignment4/lab_4/Assignment4.qmd": {
+    "Assignment4.html": "84aadc12"
+  },
+  "assignments/assignment4/lab_4/Assignment4_Instructions.md": {
+    "Assignment4_Instructions.html": "d284a658"
+  },
+  "labs/lab6/week-09/lab/predictive_policing_exercise.qmd": {
+    "predictive_policing_exercise.html": "f6fae3fd"
+  },
+  "labs/lab6/week-09/lab/test.qmd": {
+    "test.html": "048bc9f0"
+  },
+  "labs/lab6/week-09/lab/week9_test.qmd": {
+    "week9_test.html": "814bdf78"
+  },
+  "labs/lab6/week-09/lecture/First_spatial_lag_prediction_problem.qmd": {
+    "First_spatial_lag_prediction_problem.html": "531608fa"
+  },
+  "labs/lab6/week-09/lecture/Week9_slides.qmd": {
+    "Week9_slides.html": "e7b06b81"
+  },
+  "labs/lecture/script/In_Class_Exercise_Instruction.md": {
+    "In_Class_Exercise_Instruction.html": "fe88c0ec"
+  },
+  "labs/lecture/student_worksheet_classification_exercise.md": {
+    "student_worksheet_classification_exercise.html": "abc4c984"
+  },
+  "labs/lecture/week10_slides.qmd": {
+    "week10_slides.html": "f8b2a9e8"
   }
 }
