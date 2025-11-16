@@ -88,5 +88,11 @@
   },
   "labs/lecture/week10_slides.qmd": {
     "week10_slides.html": "f8b2a9e8"
+  },
+  "assignments/assignment4/scripts/Assignment4_Instructions.md": {
+    "Assignment4_Instructions.html": "1f5464ca"
+  },
+  "assignments/assignment4/scripts/assignment4_template.qmd": {
+    "assignment4_template.html": "ed94517a"
   }
 }
