@@ -94,5 +94,14 @@
   },
   "assignments/assignment4/scripts/assignment4_template.qmd": {
     "assignment4_template.html": "ed94517a"
+  },
+  "assignments/assignment5/lecture/week11-slides.qmd": {
+    "week11-slides.html": "5d2cc286"
+  },
+  "assignments/assignment5/scripts/Indego_SpaceTime_Prediction.Rmd": {
+    "Indego_SpaceTime_Prediction.html": "bb123d14"
+  },
+  "labs/week-11/lecture/week11-slides.qmd": {
+    "week11-slides.html": "06331a0c"
   }
 }

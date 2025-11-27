@@ -1,0 +1,15 @@
+"0","# Date range
+cat(""Date range:"", 
+    min(mdy_hm(indego$start_time)), ""to"", 
+    max(mdy_hm(indego$start_time)), ""\n"")
+"
+"1","Date range:"
+"1"," "
+"1","1735689600"
+"1"," "
+"1","to"
+"1"," "
+"1","1743464880"
+"1"," "
+"1","
+"
