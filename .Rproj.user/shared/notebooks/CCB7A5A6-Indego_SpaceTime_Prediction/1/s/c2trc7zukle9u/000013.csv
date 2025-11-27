@@ -1,0 +1,21 @@
+"0","# Daily trip counts"
+"0","daily_trips <- indego %>%"
+"0","  group_by(date) %>%"
+"0","  summarize(trips = n())"
+"0",""
+"0","ggplot(daily_trips, aes(x = date, y = trips)) +"
+"0","  geom_line(color = ""#3182bd"", linewidth = 1) +"
+"0","  geom_smooth(se = FALSE, color = ""red"", linetype = ""dashed"") +"
+"0","  labs("
+"0","    title = ""Indego Daily Ridership - Q1 2025"","
+"0","    subtitle = ""Winter demand patterns in Philadelphia"","
+"0","    x = ""Date"","
+"0","    y = ""Daily Trips"","
+"0","    caption = ""Source: Indego bike share"""
+"0","  ) +"
+"0","  plotTheme"
+"0","install.packages(""tigris"")"
+"2","WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+"

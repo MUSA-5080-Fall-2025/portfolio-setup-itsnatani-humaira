@@ -1,0 +1,13 @@
+"0","# Bike types
+table(indego2024$bike_type)
+"
+"1","
+"
+"1","electric "
+"1","standard "
+"1","
+"
+"1","  236839 "
+"1","  171569 "
+"1","
+"
