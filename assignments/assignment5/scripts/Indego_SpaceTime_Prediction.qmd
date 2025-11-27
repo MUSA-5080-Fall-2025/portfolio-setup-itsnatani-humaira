@@ -335,6 +335,7 @@ philly_census <- get_acs(
   year = 2022,
   geometry = TRUE,
   output = "wide",
+  show_call = FALSE,
   progress = FALSE 
 ) %>%
   rename(
