@@ -336,7 +336,7 @@ philly_census <- get_acs(
   geometry = TRUE,
   output = "wide",
   show_call = FALSE,
-  progress = FALSE 
+  progress = FALSE
 ) %>%
   rename(
     Total_Pop = B01003_001E,
