@@ -1,1 +1,3 @@
 *.rdb
+/.quarto/
+**/*.quarto_ipynb

@@ -103,5 +103,11 @@
   },
   "labs/week-11/lecture/week11-slides.qmd": {
     "week11-slides.html": "06331a0c"
+  },
+  "assignments/assignment5/scripts/Indego_SpaceTime_Prediction.qmd": {
+    "Indego_SpaceTime_Prediction.html": "f1a29996"
+  },
+  "assignments/assignment5/scripts/Indego_SpaceTime_Prediction.rmd": {
+    "Indego_SpaceTime_Prediction.html": "f46bc0fc"
   }
 }
