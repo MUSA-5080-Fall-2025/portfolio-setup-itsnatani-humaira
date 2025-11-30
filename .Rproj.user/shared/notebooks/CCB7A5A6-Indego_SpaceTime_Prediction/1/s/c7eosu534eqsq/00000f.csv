@@ -5,7 +5,6 @@
 "0","# Spatial data"
 "0","library(sf)"
 "0","library(tigris)"
-"0","install.packages(""tigris"")"
 "0",""
 "0","# Census data"
 "0","library(tidycensus)"
@@ -15,42 +14,11 @@
 "0",""
 "0","# Visualization"
 "0","library(viridis)"
-"2","G3;Loading required package: viridisLite
-g"
 "0","library(gridExtra)"
-"2","G3;
-Attaching package: ‘gridExtra’
-
-g"
-"2","G3;The following object is masked from ‘package:dplyr’:
-
-    combine
-
-g"
 "0","library(knitr)"
 "0","library(kableExtra)"
-"2","G3;Registered S3 methods overwritten by 'htmltools':
-  method               from         
-  print.html           tools:rstudio
-  print.shiny.tag      tools:rstudio
-  print.shiny.tag.list tools:rstudio
-g"
-"2","G3;Registered S3 method overwritten by 'rmarkdown':
-  method         from
-  print.paged_df     
-g"
-"2","G3;
-Attaching package: ‘kableExtra’
-
-g"
-"2","G3;The following object is masked from ‘package:dplyr’:
-
-    group_rows
-
-g"
+"0",""
 "0","# here!"
 "0","library(here)"
-"2","G3;here() starts at C:/NATAN/PENN/2025 FALL/Public Policy Analytics/portfolio-setup-itsnatani-humaira
-g"
 "0","# Get rid of scientific notation. "
 "0","options(scipen = 999)"

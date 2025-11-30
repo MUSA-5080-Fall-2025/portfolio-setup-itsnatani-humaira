@@ -1,0 +1,14 @@
+knitr::opts_chunk$set(
+echo = TRUE,
+warning = FALSE,
+message = FALSE,
+cache = TRUE
+)
+# Core tidyverse
+library(tidyverse)
+# Core tidyverse
+library(tidyverse)
+library(lubridate)
+# Spatial data
+library(sf)
+install.packages("tigris")

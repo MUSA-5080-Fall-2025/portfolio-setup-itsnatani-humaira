@@ -1,222 +1,372 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Elizabeth Delmelle">
+<meta name="dcterms.date" content="2025-10-21">
+
+<title>Model Diagnostics &amp; Spatial Autocorrelation – Itsnatani Anaqami - MUSA 5080 Portfolio</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.24">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 
-  <meta name="author" content="Dr.&nbsp;Elizabeth Delmelle">
-  <meta name="dcterms.date" content="2025-10-21">
-  <title>Itsnatani Anaqami - MUSA 5080 Portfolio – Model Diagnostics &amp; Spatial Autocorrelation</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-      vertical-align: middle;
-    }
-    /* CSS for syntax highlighting */
-    html { -webkit-text-size-adjust: 100%; }
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
       }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      { color: #003b4f; background-color: #f1f3f5; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
     }
-    code span { color: #003b4f; } /* Normal */
-    code span.al { color: #ad0000; } /* Alert */
-    code span.an { color: #5e5e5e; } /* Annotation */
-    code span.at { color: #657422; } /* Attribute */
-    code span.bn { color: #ad0000; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #20794d; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #5e5e5e; } /* Comment */
-    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-    code span.dt { color: #ad0000; } /* DataType */
-    code span.dv { color: #ad0000; } /* DecVal */
-    code span.er { color: #ad0000; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #ad0000; } /* Float */
-    code span.fu { color: #4758ab; } /* Function */
-    code span.im { color: #00769e; } /* Import */
-    code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
-    code span.op { color: #5e5e5e; } /* Operator */
-    code span.ot { color: #003b4f; } /* Other */
-    code span.pp { color: #ad0000; } /* Preprocessor */
-    code span.sc { color: #5e5e5e; } /* SpecialChar */
-    code span.ss { color: #20794d; } /* SpecialString */
-    code span.st { color: #20794d; } /* String */
-    code span.va { color: #111111; } /* Variable */
-    code span.vs { color: #20794d; } /* VerbatimString */
-    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
-  </style>
-  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-0fde88a82f0356838740f155f1088782.css">
-  <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-  <style type="text/css">
-    .reveal div.sourceCode {
-      margin: 0;
-      overflow: auto;
-    }
-    .reveal div.hanging-indent {
-      margin-left: 1em;
-      text-indent: -1em;
-    }
-    .reveal .slide:not(.center) {
-      height: 100%;
-      overflow-y: auto;
-    }
-    .reveal .slide.scrollable {
-      overflow-y: auto;
-    }
-    .reveal .footnotes {
-      height: 100%;
-      overflow-y: auto;
-    }
-    .reveal .slide .absolute {
-      position: absolute;
-      display: block;
-    }
-    .reveal .footnotes ol {
-      counter-reset: ol;
-      list-style-type: none; 
-      margin-left: 0;
-    }
-    .reveal .footnotes ol li:before {
-      counter-increment: ol;
-      content: counter(ol) ". "; 
-    }
-    .reveal .footnotes ol li > p:first-child {
-      display: inline-block;
-    }
-    .reveal .slide ul,
-    .reveal .slide ol {
-      margin-bottom: 0.5em;
-    }
-    .reveal .slide ul li,
-    .reveal .slide ol li {
-      margin-top: 0.4em;
-      margin-bottom: 0.2em;
-    }
-    .reveal .slide ul[role="tablist"] li {
-      margin-bottom: 0;
-    }
-    .reveal .slide ul li > *:first-child,
-    .reveal .slide ol li > *:first-child {
-      margin-block-start: 0;
-    }
-    .reveal .slide ul li > *:last-child,
-    .reveal .slide ol li > *:last-child {
-      margin-block-end: 0;
-    }
-    .reveal .slide .columns:nth-child(3) {
-      margin-block-start: 0.8em;
-    }
-    .reveal blockquote {
-      box-shadow: none;
-    }
-    .reveal .tippy-content>* {
-      margin-top: 0.2em;
-      margin-bottom: 0.7em;
-    }
-    .reveal .tippy-content>*:last-child {
-      margin-bottom: 0.2em;
-    }
-    .reveal .slide > img.stretch.quarto-figure-center,
-    .reveal .slide > img.r-stretch.quarto-figure-center {
-      display: block;
-      margin-left: auto;
-      margin-right: auto; 
-    }
-    .reveal .slide > img.stretch.quarto-figure-left,
-    .reveal .slide > img.r-stretch.quarto-figure-left  {
-      display: block;
-      margin-left: 0;
-      margin-right: auto; 
-    }
-    .reveal .slide > img.stretch.quarto-figure-right,
-    .reveal .slide > img.r-stretch.quarto-figure-right  {
-      display: block;
-      margin-left: auto;
-      margin-right: 0; 
-    }
-  </style>
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 </head>
-<body class="quarto-light">
-  <div class="reveal">
-    <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Model Diagnostics &amp; Spatial Autocorrelation</h1>
-  <p class="subtitle">Week 7: MUSA 5080</p>
+<body class="nav-fixed quarto-light">
 
-<div class="quarto-title-authors">
-<div class="quarto-title-author">
-<div class="quarto-title-author-name">
-Dr.&nbsp;Elizabeth Delmelle 
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Itsnatani Anaqami - MUSA 5080 Portfolio</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-weekly-notes" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Weekly Notes</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-weekly-notes">    
+        <li>
+    <a class="dropdown-item" href="../../../../weekly-notes/week-01-notes.html">
+ <span class="dropdown-text">Week 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../weekly-notes/week-02-notes.html">
+ <span class="dropdown-text">Week 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../weekly-notes/week-03-notes.html">
+ <span class="dropdown-text">Week 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../weekly-notes/week-04-notes.html">
+ <span class="dropdown-text">Week 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../weekly-notes/week-05-notes.html">
+ <span class="dropdown-text">Week 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../weekly-notes/week-06-notes.html">
+ <span class="dropdown-text">Week 6</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-labs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Labs</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-labs">    
+        <li>
+    <a class="dropdown-item" href="../../../../labs/lab0/scripts/lab0_template.html">
+ <span class="dropdown-text">lab 0</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../labs/lab1/scripts/week3_lab_exercise.html">
+ <span class="dropdown-text">lab 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../labs/lab2/scripts/week4_inclass_practice.html">
+ <span class="dropdown-text">lab 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../labs/lab3/scripts/week5-complete-slides.html">
+ <span class="dropdown-text">lab 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../labs/lab4/scripts/week6_inclass_practice.qmd">
+ <span class="dropdown-text">lab 4</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-assignments" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Assignments</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-assignments">    
+        <li>
+    <a class="dropdown-item" href="../../../../assignments/assignment1/scripts/assignment1_template.html">
+ <span class="dropdown-text">Assignment 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../assignments/assignment2/scripts/assignment2_template.html">
+ <span class="dropdown-text">Assignment 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../assignments/assignment4/scripts/assignment4_template.html">
+ <span class="dropdown-text">Assignment 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../assignments/assignment5/scripts/Indego_SpaceTime_Prediction.html">
+ <span class="dropdown-text">Assignment 5</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-midterm" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Midterm</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-midterm">    
+        <li>
+    <a class="dropdown-item" href="../../../../midterm/appendix/Midterm_2025.html">
+ <span class="dropdown-text">Single-Family Home Price Prediction in Philadelphia</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../midterm/slides/Midterm_slides_v3.html">
+ <span class="dropdown-text">Improving Property Tax Assessments</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
 </div>
-</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#homework-feedback-tips" id="toc-homework-feedback-tips" class="nav-link active" data-scroll-target="#homework-feedback-tips">Homework Feedback &amp; Tips</a>
+  <ul class="collapse">
+  <li><a href="#before-we-start-a-quick-note-on-your-submissions" id="toc-before-we-start-a-quick-note-on-your-submissions" class="nav-link" data-scroll-target="#before-we-start-a-quick-note-on-your-submissions">Before We Start: A Quick Note on Your Submissions</a></li>
+  <li><a href="#the-problem-progress-bars-in-rendered-output" id="toc-the-problem-progress-bars-in-rendered-output" class="nav-link" data-scroll-target="#the-problem-progress-bars-in-rendered-output">The Problem: Progress Bars in Rendered Output</a></li>
+  <li><a href="#the-solution-add-progress-false" id="toc-the-solution-add-progress-false" class="nav-link" data-scroll-target="#the-solution-add-progress-false">The Solution: Add <code>progress = FALSE</code></a>
+  <ul class="collapse">
+  <li><a href="#option-1-in-each-function-call" id="toc-option-1-in-each-function-call" class="nav-link" data-scroll-target="#option-1-in-each-function-call"><strong>Option 1: In each function call</strong></a></li>
+  <li><a href="#option-2-set-globally-at-top-of-document-recommended" id="toc-option-2-set-globally-at-top-of-document-recommended" class="nav-link" data-scroll-target="#option-2-set-globally-at-top-of-document-recommended"><strong>Option 2: Set globally at top of document</strong> (Recommended!)</a></li>
+  </ul></li>
+  <li><a href="#action-required-re-render-before-final-grading" id="toc-action-required-re-render-before-final-grading" class="nav-link" data-scroll-target="#action-required-re-render-before-final-grading">Action Required: Re-Render Before Final Grading</a></li>
+  </ul></li>
+  <li><a href="#todays-plan" id="toc-todays-plan" class="nav-link" data-scroll-target="#todays-plan">Today’s Plan</a>
+  <ul class="collapse">
+  <li><a href="#agenda-overview" id="toc-agenda-overview" class="nav-link" data-scroll-target="#agenda-overview">Agenda Overview</a></li>
+  </ul></li>
+  <li><a href="#part-1-where-we-are" id="toc-part-1-where-we-are" class="nav-link" data-scroll-target="#part-1-where-we-are">Part 1: Where We Are</a>
+  <ul class="collapse">
+  <li><a href="#the-journey-so-far" id="toc-the-journey-so-far" class="nav-link" data-scroll-target="#the-journey-so-far">The Journey So Far</a></li>
+  <li><a href="#last-weeks-key-innovation" id="toc-last-weeks-key-innovation" class="nav-link" data-scroll-target="#last-weeks-key-innovation">Last Week’s Key Innovation</a></li>
+  <li><a href="#the-regression-workflow-updated" id="toc-the-regression-workflow-updated" class="nav-link" data-scroll-target="#the-regression-workflow-updated">The Regression Workflow (Updated)</a></li>
+  </ul></li>
+  <li><a href="#part-2-understanding-spatial-patterns-in-errors" id="toc-part-2-understanding-spatial-patterns-in-errors" class="nav-link" data-scroll-target="#part-2-understanding-spatial-patterns-in-errors">Part 2: Understanding Spatial Patterns in Errors</a>
+  <ul class="collapse">
+  <li><a href="#what-are-model-errors" id="toc-what-are-model-errors" class="nav-link" data-scroll-target="#what-are-model-errors">What Are Model Errors?</a></li>
+  <li><a href="#good-errors-vs.-bad-errors" id="toc-good-errors-vs.-bad-errors" class="nav-link" data-scroll-target="#good-errors-vs.-bad-errors">Good Errors vs.&nbsp;Bad Errors</a></li>
+  <li><a href="#toblers-first-law-revisited" id="toc-toblers-first-law-revisited" class="nav-link" data-scroll-target="#toblers-first-law-revisited">Tobler’s First Law (Revisited)</a></li>
+  <li><a href="#visualizing-error-patterns" id="toc-visualizing-error-patterns" class="nav-link" data-scroll-target="#visualizing-error-patterns">Visualizing Error Patterns</a></li>
+  <li><a href="#scatter-plot-spatial-lag-of-errors" id="toc-scatter-plot-spatial-lag-of-errors" class="nav-link" data-scroll-target="#scatter-plot-spatial-lag-of-errors">Scatter Plot: Spatial Lag of Errors</a></li>
+  </ul></li>
+  <li><a href="#part-3-morans-i" id="toc-part-3-morans-i" class="nav-link" data-scroll-target="#part-3-morans-i">Part 3: Moran’s I</a>
+  <ul class="collapse">
+  <li><a href="#what-is-morans-i" id="toc-what-is-morans-i" class="nav-link" data-scroll-target="#what-is-morans-i">What is Moran’s I?</a></li>
+  <li><a href="#worked-example-understanding-the-formula" id="toc-worked-example-understanding-the-formula" class="nav-link" data-scroll-target="#worked-example-understanding-the-formula">Worked Example: Understanding the Formula</a></li>
+  <li><a href="#step-1-calculate-deviations-from-mean" id="toc-step-1-calculate-deviations-from-mean" class="nav-link" data-scroll-target="#step-1-calculate-deviations-from-mean">Step 1: Calculate Deviations from Mean</a></li>
+  <li><a href="#step-2-multiply-neighbor-deviations" id="toc-step-2-multiply-neighbor-deviations" class="nav-link" data-scroll-target="#step-2-multiply-neighbor-deviations">Step 2: Multiply Neighbor Deviations</a></li>
+  <li><a href="#the-intuition-behind-morans-i" id="toc-the-intuition-behind-morans-i" class="nav-link" data-scroll-target="#the-intuition-behind-morans-i">The Intuition Behind Moran’s I</a></li>
+  <li><a href="#the-intuition-behind-morans-i-1" id="toc-the-intuition-behind-morans-i-1" class="nav-link" data-scroll-target="#the-intuition-behind-morans-i-1">The Intuition Behind Moran’s I</a></li>
+  <li><a href="#defining-neighbors" id="toc-defining-neighbors" class="nav-link" data-scroll-target="#defining-neighbors">Defining “Neighbors”</a></li>
+  <li><a href="#calculating-spatial-lag" id="toc-calculating-spatial-lag" class="nav-link" data-scroll-target="#calculating-spatial-lag">Calculating Spatial Lag</a></li>
+  <li><a href="#computing-morans-i" id="toc-computing-morans-i" class="nav-link" data-scroll-target="#computing-morans-i">Computing Moran’s I</a></li>
+  <li><a href="#visualizing-significance" id="toc-visualizing-significance" class="nav-link" data-scroll-target="#visualizing-significance">Visualizing Significance</a></li>
+  <li><a href="#what-morans-i-tells-you" id="toc-what-morans-i-tells-you" class="nav-link" data-scroll-target="#what-morans-i-tells-you">What Moran’s I Tells You</a></li>
+  <li><a href="#what-about-spatial-lagerror-models" id="toc-what-about-spatial-lagerror-models" class="nav-link" data-scroll-target="#what-about-spatial-lagerror-models">“What About Spatial Lag/Error Models?”</a></li>
+  <li><a href="#why-not-spatial-lag-models-for-prediction" id="toc-why-not-spatial-lag-models-for-prediction" class="nav-link" data-scroll-target="#why-not-spatial-lag-models-for-prediction">Why Not Spatial Lag Models for Prediction?</a></li>
+  <li><a href="#quick-clarification-biased-vs.-inconsistent" id="toc-quick-clarification-biased-vs.-inconsistent" class="nav-link" data-scroll-target="#quick-clarification-biased-vs.-inconsistent">Quick Clarification: Biased vs.&nbsp;Inconsistent</a></li>
+  </ul></li>
+  <li><a href="#summary-next-steps" id="toc-summary-next-steps" class="nav-link" data-scroll-target="#summary-next-steps">Summary &amp; Next Steps</a>
+  <ul class="collapse">
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways">Key Takeaways</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul></li>
+  <li><a href="#questions-before-work-time" id="toc-questions-before-work-time" class="nav-link" data-scroll-target="#questions-before-work-time">Questions Before Work Time?</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="week7_slides.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Model Diagnostics &amp; Spatial Autocorrelation</h1>
+<p class="subtitle lead">Week 7: MUSA 5080</p>
 </div>
 
-  <p class="date">2025-10-21</p>
-</section>
-<section>
-<section id="homework-feedback-tips" class="title-slide slide level1 center">
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Elizabeth Delmelle </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 21, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="homework-feedback-tips" class="level1">
 <h1>Homework Feedback &amp; Tips</h1>
-
-</section>
-<section id="before-we-start-a-quick-note-on-your-submissions" class="slide level2">
-<h2>Before We Start: A Quick Note on Your Submissions</h2>
+<section id="before-we-start-a-quick-note-on-your-submissions" class="level2">
+<h2 class="anchored" data-anchor-id="before-we-start-a-quick-note-on-your-submissions">Before We Start: A Quick Note on Your Submissions</h2>
 <p><strong>We noticed something in your homework submissions…</strong></p>
 <p>Many of you have <strong>messy output</strong> in your rendered HTML files from <code>tigris</code> and <code>tidycensus</code> functions.</p>
 <p><strong>Example of what we’re seeing:</strong></p>
@@ -226,69 +376,91 @@ Dr.&nbsp;Elizabeth Delmelle
 Downloading: 4.3 MB     
 Downloading: 3.7 MB</code></pre>
 <p><strong>This clutters your professional report!</strong></p>
+<hr>
 </section>
-<section id="the-problem-progress-bars-in-rendered-output" class="slide level2 smaller">
-<h2>The Problem: Progress Bars in Rendered Output</h2>
+<section id="the-problem-progress-bars-in-rendered-output" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="the-problem-progress-bars-in-rendered-output">The Problem: Progress Bars in Rendered Output</h2>
 <p><strong>What’s happening:</strong></p>
 <p>When you use <code>tigris</code> or <code>tidycensus</code> functions, they show download progress by default.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3 id="in-your-console-good"><strong>In your console (good!):</strong></h3>
+<section id="in-your-console-good" class="level3">
+<h3 class="anchored" data-anchor-id="in-your-console-good"><strong>In your console (good!):</strong></h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>tracts <span class="ot">&lt;-</span> <span class="fu">get_acs</span>(</span>
-<span id="cb2-2"><a></a>  <span class="at">geography =</span> <span class="st">"tract"</span>,</span>
-<span id="cb2-3"><a></a>  <span class="at">variables =</span> <span class="st">"B01003_001"</span>,</span>
-<span id="cb2-4"><a></a>  <span class="at">state =</span> <span class="st">"PA"</span>,</span>
-<span id="cb2-5"><a></a>  <span class="at">geometry =</span> <span class="cn">TRUE</span></span>
-<span id="cb2-6"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tracts <span class="ot">&lt;-</span> <span class="fu">get_acs</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">"tract"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> <span class="st">"B01003_001"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> <span class="st">"PA"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">geometry =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>Shows:</p>
 <pre><code>Getting data from the 2018-2022 5-year ACS
   |======| 100%</code></pre>
 <p><strong>This is helpful when coding!</strong></p>
+</section>
 </div><div class="column" style="width:50%;">
-<h3 id="in-your-rendered-html-bad"><strong>In your rendered HTML (bad!):</strong></h3>
+<section id="in-your-rendered-html-bad" class="level3">
+<h3 class="anchored" data-anchor-id="in-your-rendered-html-bad"><strong>In your rendered HTML (bad!):</strong></h3>
 <p>All those progress messages appear as ugly text in your final document.</p>
 <p><strong>This looks unprofessional</strong> and makes your work harder to read.</p>
 <p><strong>Solution:</strong> Suppress progress messages in your code chunks</p>
-</div></div>
 </section>
-<section id="the-solution-add-progress-false" class="slide level2 smaller">
-<h2>The Solution: Add <code>progress = FALSE</code></h2>
+</div>
+</div>
+<hr>
+</section>
+<section id="the-solution-add-progress-false" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="the-solution-add-progress-false">The Solution: Add <code>progress = FALSE</code></h2>
 <p><strong>Two ways to fix this:</strong></p>
-<h3 id="option-1-in-each-function-call"><strong>Option 1: In each function call</strong></h3>
+<section id="option-1-in-each-function-call" class="level3">
+<h3 class="anchored" data-anchor-id="option-1-in-each-function-call"><strong>Option 1: In each function call</strong></h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># Add progress = FALSE to EVERY tigris/tidycensus call</span></span>
-<span id="cb4-2"><a></a>tracts <span class="ot">&lt;-</span> <span class="fu">get_acs</span>(</span>
-<span id="cb4-3"><a></a>  <span class="at">geography =</span> <span class="st">"tract"</span>,</span>
-<span id="cb4-4"><a></a>  <span class="at">variables =</span> <span class="st">"B01003_001"</span>,</span>
-<span id="cb4-5"><a></a>  <span class="at">state =</span> <span class="st">"PA"</span>,</span>
-<span id="cb4-6"><a></a>  <span class="at">geometry =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb4-7"><a></a>  <span class="at">progress =</span> <span class="cn">FALSE</span>  <span class="co"># &lt;-- Add this!</span></span>
-<span id="cb4-8"><a></a>)</span>
-<span id="cb4-9"><a></a></span>
-<span id="cb4-10"><a></a>roads <span class="ot">&lt;-</span> <span class="fu">roads</span>(<span class="at">state =</span> <span class="st">"PA"</span>, </span>
-<span id="cb4-11"><a></a>               <span class="at">county =</span> <span class="st">"Philadelphia"</span>,</span>
-<span id="cb4-12"><a></a>               <span class="at">progress =</span> <span class="cn">FALSE</span>)  <span class="co"># &lt;-- Add this!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<h3 id="option-2-set-globally-at-top-of-document-recommended"><strong>Option 2: Set globally at top of document</strong> (Recommended!)</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># Add this near the top of your .qmd after loading libraries</span></span>
-<span id="cb5-2"><a></a><span class="fu">options</span>(<span class="at">tigris_use_cache =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-3"><a></a><span class="fu">options</span>(<span class="at">tigris_progress =</span> <span class="cn">FALSE</span>)  <span class="co"># Suppress tigris progress bars</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add progress = FALSE to EVERY tigris/tidycensus call</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tracts <span class="ot">&lt;-</span> <span class="fu">get_acs</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">"tract"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> <span class="st">"B01003_001"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> <span class="st">"PA"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">geometry =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress =</span> <span class="cn">FALSE</span>  <span class="co"># &lt;-- Add this!</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>roads <span class="ot">&lt;-</span> <span class="fu">roads</span>(<span class="at">state =</span> <span class="st">"PA"</span>, </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">county =</span> <span class="st">"Philadelphia"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">progress =</span> <span class="cn">FALSE</span>)  <span class="co"># &lt;-- Add this!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
-<section id="action-required-re-render-before-final-grading" class="slide level2 smaller scrollable">
-<h2>Action Required: Re-Render Before Final Grading</h2>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
+<section id="option-2-set-globally-at-top-of-document-recommended" class="level3">
+<h3 class="anchored" data-anchor-id="option-2-set-globally-at-top-of-document-recommended"><strong>Option 2: Set globally at top of document</strong> (Recommended!)</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add this near the top of your .qmd after loading libraries</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tigris_use_cache =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tigris_progress =</span> <span class="cn">FALSE</span>)  <span class="co"># Suppress tigris progress bars</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<hr>
+</section>
+</section>
+<section id="action-required-re-render-before-final-grading" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="action-required-re-render-before-final-grading">Action Required: Re-Render Before Final Grading</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong><strong>📝 To-Do Before We Grade</strong></strong></p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span><strong>📝 To-Do Before We Grade</strong>
 </div>
-<div class="callout-content">
+</div>
+<div class="callout-body-container callout-body">
 <p><strong>Please go back to your homework and:</strong></p>
 <ol type="1">
 <li>Open your <code>.qmd</code> file</li>
@@ -304,18 +476,13 @@ Downloading: 3.7 MB</code></pre>
 <p><strong>Why this matters:</strong> We gotta look good!</p>
 </div>
 </div>
-</div>
+<hr>
 </section>
-<section class="slide level2">
-
-</section></section>
-<section>
-<section id="todays-plan" class="title-slide slide level1 center">
+</section>
+<section id="todays-plan" class="level1">
 <h1>Today’s Plan</h1>
-
-</section>
-<section id="agenda-overview" class="slide level2">
-<h2>Agenda Overview</h2>
+<section id="agenda-overview" class="level2">
+<h2 class="anchored" data-anchor-id="agenda-overview">Agenda Overview</h2>
 <p><strong>Part 1: Review &amp; Connect</strong></p>
 <ul>
 <li>Where we’ve been and where we’re going</li>
@@ -335,17 +502,13 @@ Downloading: 3.7 MB</code></pre>
 </ul>
 <p><strong>BREAK (10 min)</strong></p>
 <p><strong>Part 4: Midterm Work Session (90+ min)</strong></p>
+<hr>
 </section>
-<section class="slide level2">
-
-</section></section>
-<section>
-<section id="part-1-where-we-are" class="title-slide slide level1 center">
+</section>
+<section id="part-1-where-we-are" class="level1">
 <h1>Part 1: Where We Are</h1>
-
-</section>
-<section id="the-journey-so-far" class="slide level2">
-<h2>The Journey So Far</h2>
+<section id="the-journey-so-far" class="level2">
+<h2 class="anchored" data-anchor-id="the-journey-so-far">The Journey So Far</h2>
 <p><strong>Weeks 1-3:</strong> Data foundations</p>
 <ul>
 <li>Census data, tidycensus, spatial data basics</li>
@@ -364,17 +527,17 @@ Downloading: 3.7 MB</code></pre>
 <li>Neighborhood fixed effects</li>
 </ul>
 </section>
-<section id="last-weeks-key-innovation" class="slide level2">
-<h2>Last Week’s Key Innovation</h2>
+<section id="last-weeks-key-innovation" class="level2">
+<h2 class="anchored" data-anchor-id="last-weeks-key-innovation">Last Week’s Key Innovation</h2>
 <p><strong>You learned to create spatial features:</strong></p>
 <p><strong>Today’s Question:</strong></p>
-<blockquote>
+<blockquote class="blockquote">
 <p><em>How do we know if our model still has spatial structure in its errors?</em></p>
 </blockquote>
 <p>If errors are spatially clustered, we’re missing something important!</p>
 </section>
-<section id="the-regression-workflow-updated" class="slide level2 scrollable">
-<h2>The Regression Workflow (Updated)</h2>
+<section id="the-regression-workflow-updated" class="level2">
+<h2 class="anchored" data-anchor-id="the-regression-workflow-updated">The Regression Workflow (Updated)</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><strong>Building the model:</strong></p>
@@ -392,16 +555,18 @@ Downloading: 3.7 MB</code></pre>
 <li><strong>Do we predict better in some areas?</strong></li>
 <li><strong>Is there remaining spatial structure?</strong></li>
 </ol>
-</div></div>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Why This Matters</strong></p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Why This Matters
 </div>
-<div class="callout-content">
+</div>
+<div class="callout-body-container callout-body">
 <p>If errors cluster spatially, it suggests:</p>
 <ul>
 <li>Missing spatial variables</li>
@@ -410,18 +575,13 @@ Downloading: 3.7 MB</code></pre>
 </ul>
 </div>
 </div>
-</div>
+<hr>
 </section>
-<section class="slide level2">
-
-</section></section>
-<section>
-<section id="part-2-understanding-spatial-patterns-in-errors" class="title-slide slide level1 center">
+</section>
+<section id="part-2-understanding-spatial-patterns-in-errors" class="level1">
 <h1>Part 2: Understanding Spatial Patterns in Errors</h1>
-
-</section>
-<section id="what-are-model-errors" class="slide level2">
-<h2>What Are Model Errors?</h2>
+<section id="what-are-model-errors" class="level2">
+<h2 class="anchored" data-anchor-id="what-are-model-errors">What Are Model Errors?</h2>
 <p><strong>Prediction error</strong> for observation <em>i</em>:</p>
 <p><span class="math display">\[e_i = \hat{y}_i - y_i\]</span></p>
 <p>Where:</p>
@@ -431,17 +591,20 @@ Downloading: 3.7 MB</code></pre>
 </ul>
 <p><strong>In our house price context:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># Load packages and data</span></span>
-<span id="cb6-2"><a></a><span class="fu">library</span>(sf)</span>
-<span id="cb6-3"><a></a><span class="fu">library</span>(here)</span>
-<span id="cb6-4"><a></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb6-5"><a></a></span>
-<span id="cb6-6"><a></a><span class="co"># Load Boston housing data</span></span>
-<span id="cb6-7"><a></a>boston <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data/boston.csv"</span>))</span>
-<span id="cb6-8"><a></a></span>
-<span id="cb6-9"><a></a><span class="co"># Simple model: Predict price from living area</span></span>
-<span id="cb6-10"><a></a>baseline_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(SalePrice <span class="sc">~</span> LivingArea, <span class="at">data =</span> boston)</span>
-<span id="cb6-11"><a></a><span class="fu">summary</span>(baseline_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages and data</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Boston housing data</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>boston <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data/boston.csv"</span>))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple model: Predict price from living area</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>baseline_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(SalePrice <span class="sc">~</span> LivingArea, <span class="at">data =</span> boston)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(baseline_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -462,17 +625,20 @@ Residual standard error: 563800 on 1483 degrees of freedom
 Multiple R-squared:  0.1313,    Adjusted R-squared:  0.1307 
 F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>boston_test <span class="ot">&lt;-</span> boston <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-3"><a></a>    <span class="at">predicted =</span> <span class="fu">predict</span>(baseline_model, boston),</span>
-<span id="cb8-4"><a></a>    <span class="at">error =</span> predicted <span class="sc">-</span> SalePrice,</span>
-<span id="cb8-5"><a></a>    <span class="at">abs_error =</span> <span class="fu">abs</span>(error),</span>
-<span id="cb8-6"><a></a>    <span class="at">pct_error =</span> <span class="fu">abs</span>(error) <span class="sc">/</span> SalePrice</span>
-<span id="cb8-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>boston_test <span class="ot">&lt;-</span> boston <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">predict</span>(baseline_model, boston),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> predicted <span class="sc">-</span> SalePrice,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">abs_error =</span> <span class="fu">abs</span>(error),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_error =</span> <span class="fu">abs</span>(error) <span class="sc">/</span> SalePrice</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
-<section id="good-errors-vs.-bad-errors" class="slide level2">
-<h2>Good Errors vs.&nbsp;Bad Errors</h2>
+<section id="good-errors-vs.-bad-errors" class="level2">
+<h2 class="anchored" data-anchor-id="good-errors-vs.-bad-errors">Good Errors vs.&nbsp;Bad Errors</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>** Random errors (good)**</p>
@@ -490,24 +656,25 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Model misses something about location</li>
 <li>Need more spatial features!</li>
 </ul>
-</div></div>
+</div>
+</div>
 <p><strong>How do we test this?</strong></p>
 <p>Look for <strong>spatial autocorrelation</strong> in the errors</p>
 </section>
-<section id="toblers-first-law-revisited" class="slide level2">
-<h2>Tobler’s First Law (Revisited)</h2>
-<div class="callout callout-note callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
+<section id="toblers-first-law-revisited" class="level2">
+<h2 class="anchored" data-anchor-id="toblers-first-law-revisited">Tobler’s First Law (Revisited)</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>The First Law of Geography</strong></p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The First Law of Geography
 </div>
-<div class="callout-content">
+</div>
+<div class="callout-body-container callout-body">
 <p><em>“Everything is related to everything else, but near things are more related than distant things.”</em></p>
 <p>— Waldo Tobler (1970)</p>
-</div>
 </div>
 </div>
 <p><strong>Applied to house prices:</strong></p>
@@ -523,44 +690,59 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Need to add more spatial features or fixed effects</li>
 </ul>
 </section>
-<section id="visualizing-error-patterns" class="slide level2">
-<h2>Visualizing Error Patterns</h2>
+<section id="visualizing-error-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-error-patterns">Visualizing Error Patterns</h2>
 <p><strong>Map your errors to see patterns:</strong></p>
-
-<img data-src="week7_slides_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><p><strong>What to look for:</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week7_slides_files/figure-revealjs/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>What to look for:</strong></p>
 <ul>
 <li>Blue clusters (we under-predict)</li>
 <li>Red clusters (we over-predict)</li>
 <li>Random scatter (good!)</li>
 </ul>
 </section>
-<section id="scatter-plot-spatial-lag-of-errors" class="slide level2">
-<h2>Scatter Plot: Spatial Lag of Errors</h2>
+<section id="scatter-plot-spatial-lag-of-errors" class="level2">
+<h2 class="anchored" data-anchor-id="scatter-plot-spatial-lag-of-errors">Scatter Plot: Spatial Lag of Errors</h2>
 <p><strong>Create the spatial lag:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">library</span>(spdep)</span>
-<span id="cb9-2"><a></a></span>
-<span id="cb9-3"><a></a><span class="co"># Define neighbors (5 nearest)</span></span>
-<span id="cb9-4"><a></a>coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(boston_test)</span>
-<span id="cb9-5"><a></a>neighbors <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">5</span>))</span>
-<span id="cb9-6"><a></a>weights <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(neighbors, <span class="at">style=</span><span class="st">"W"</span>)</span>
-<span id="cb9-7"><a></a></span>
-<span id="cb9-8"><a></a><span class="co"># Calculate spatial lag of errors</span></span>
-<span id="cb9-9"><a></a>boston_test<span class="sc">$</span>error_lag <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(weights, boston_test<span class="sc">$</span>error)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spdep)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define neighbors (5 nearest)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(boston_test)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>neighbors <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">5</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>weights <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(neighbors, <span class="at">style=</span><span class="st">"W"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate spatial lag of errors</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>boston_test<span class="sc">$</span>error_lag <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(weights, boston_test<span class="sc">$</span>error)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p><strong>Then plot:</strong></p>
-
-<img data-src="week7_slides_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
-<section class="slide level2">
-
-</section></section>
-<section>
-<section id="part-3-morans-i" class="title-slide slide level1 center">
-<h1>Part 3: Moran’s I</h1>
-
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week7_slides_files/figure-revealjs/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
 </section>
-<section id="what-is-morans-i" class="slide level2">
-<h2>What is Moran’s I?</h2>
+</section>
+<section id="part-3-morans-i" class="level1">
+<h1>Part 3: Moran’s I</h1>
+<section id="what-is-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-morans-i">What is Moran’s I?</h2>
 <p><strong>Moran’s I</strong> measures spatial autocorrelation</p>
 <p><strong>Range:</strong> -1 to +1</p>
 <ul>
@@ -572,10 +754,10 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p><span class="math display">\[I = \frac{n \sum_i \sum_j w_{ij}(x_i - \bar{x})(x_j - \bar{x})}{\sum_i \sum_j w_{ij} \sum_i (x_i - \bar{x})^2}\]</span></p>
 <p>Where <span class="math inline">\(w_{ij}\)</span> = spatial weight between locations <em>i</em> and <em>j</em></p>
 </section>
-<section id="worked-example-understanding-the-formula" class="slide level2">
-<h2>Worked Example: Understanding the Formula</h2>
+<section id="worked-example-understanding-the-formula" class="level2">
+<h2 class="anchored" data-anchor-id="worked-example-understanding-the-formula">Worked Example: Understanding the Formula</h2>
 <p><strong>5 houses in a row, predicting sale prices:</strong></p>
-<table class="caption-top">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>House</th>
@@ -619,11 +801,12 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 </table>
 <p><strong>Mean error = +$16k</strong></p>
 <p><strong>The question:</strong> Are errors for nearby houses similar to each other?</p>
+<hr>
 </section>
-<section id="step-1-calculate-deviations-from-mean" class="slide level2">
-<h2>Step 1: Calculate Deviations from Mean</h2>
+<section id="step-1-calculate-deviations-from-mean" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-calculate-deviations-from-mean">Step 1: Calculate Deviations from Mean</h2>
 <p><strong>Subtract the mean error from each house’s error:</strong></p>
-<table class="caption-top">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>House</th>
@@ -667,9 +850,10 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 </table>
 <p><strong>Positive deviation</strong> = we over-predicted (actual &gt; predicted)<br>
 <strong>Negative deviation</strong> = we under-predicted (actual &lt; predicted)</p>
+<hr>
 </section>
-<section id="step-2-multiply-neighbor-deviations" class="slide level2">
-<h2>Step 2: Multiply Neighbor Deviations</h2>
+<section id="step-2-multiply-neighbor-deviations" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-multiply-neighbor-deviations">Step 2: Multiply Neighbor Deviations</h2>
 <p><strong>For each neighbor pair, multiply their deviations:</strong></p>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -687,12 +871,14 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p><strong>Negative product</strong> = dissimilar neighbors<br>
 - C-D: one over, one under</p>
 <p><strong>The pattern:</strong> High-error houses cluster together, low-error houses cluster together</p>
-</div></div>
+</div>
+</div>
+<hr>
 </section>
-<section id="the-intuition-behind-morans-i" class="slide level2 scrollable">
-<h2>The Intuition Behind Moran’s I</h2>
+<section id="the-intuition-behind-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="the-intuition-behind-morans-i">The Intuition Behind Moran’s I</h2>
 <p><strong>The formula is really just asking:</strong></p>
-<blockquote>
+<blockquote class="blockquote">
 <p><em>“When I’m above/below average, are my neighbors also above/below average?”</em></p>
 </blockquote>
 <p><strong>Breaking it down:</strong></p>
@@ -712,11 +898,12 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Products near zero → <strong>Low Moran’s I</strong> (random)</li>
 <li>Negative products → <strong>Negative Moran’s I</strong> (rare with errors)</li>
 </ul>
+<hr>
 </section>
-<section id="the-intuition-behind-morans-i-1" class="slide level2 scrollable">
-<h2>The Intuition Behind Moran’s I</h2>
+<section id="the-intuition-behind-morans-i-1" class="level2">
+<h2 class="anchored" data-anchor-id="the-intuition-behind-morans-i-1">The Intuition Behind Moran’s I</h2>
 <p><strong>The formula is really just asking:</strong></p>
-<blockquote>
+<blockquote class="blockquote">
 <p><em>“When I’m above/below average, are my neighbors also above/below average?”</em></p>
 </blockquote>
 <p><strong>Breaking it down:</strong></p>
@@ -737,8 +924,8 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Negative products → <strong>Negative Moran’s I</strong> (rare with errors)</li>
 </ul>
 </section>
-<section id="defining-neighbors" class="slide level2">
-<h2>Defining “Neighbors”</h2>
+<section id="defining-neighbors" class="level2">
+<h2 class="anchored" data-anchor-id="defining-neighbors">Defining “Neighbors”</h2>
 <p><strong>Different ways to define spatial relationships:</strong></p>
 <div class="columns">
 <div class="column" style="width:33%;">
@@ -759,28 +946,33 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Closest k points</li>
 <li>Adaptive distance</li>
 </ul>
-</div></div>
+</div>
+</div>
 <p><strong>For point data (houses), use k-nearest neighbors</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="co"># Create 5-nearest neighbors</span></span>
-<span id="cb10-2"><a></a>coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(boston_test)</span>
-<span id="cb10-3"><a></a>nb <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">5</span>))</span>
-<span id="cb10-4"><a></a>weights <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(nb, <span class="at">style=</span><span class="st">"W"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create 5-nearest neighbors</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(boston_test)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>nb <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">5</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>weights <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(nb, <span class="at">style=</span><span class="st">"W"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
-<section id="calculating-spatial-lag" class="slide level2">
-<h2>Calculating Spatial Lag</h2>
+<section id="calculating-spatial-lag" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-spatial-lag">Calculating Spatial Lag</h2>
 <p><strong>Spatial lag</strong> = average value of neighbors</p>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Example: 5 houses</strong></p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Example: 5 houses
 </div>
-<div class="callout-content">
-<table class="caption-top">
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>House</th>
@@ -824,30 +1016,38 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 </table>
 </div>
 </div>
-</div>
 <p><strong>In R:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>boston<span class="sc">$</span>price_lag <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(weights, boston<span class="sc">$</span>SalePrice)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>boston<span class="sc">$</span>price_lag <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(weights, boston<span class="sc">$</span>SalePrice)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
-<section id="computing-morans-i" class="slide level2">
-<h2>Computing Moran’s I</h2>
+<section id="computing-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="computing-morans-i">Computing Moran’s I</h2>
 <p><strong>Calculate Moran’s I for your errors:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="co"># Test for spatial autocorrelation in errors</span></span>
-<span id="cb12-2"><a></a>moran_test <span class="ot">&lt;-</span> <span class="fu">moran.mc</span>(</span>
-<span id="cb12-3"><a></a>  boston_test<span class="sc">$</span>error,        <span class="co"># Your errors</span></span>
-<span id="cb12-4"><a></a>  weights,                  <span class="co"># Spatial weights matrix</span></span>
-<span id="cb12-5"><a></a>  <span class="at">nsim =</span> <span class="dv">999</span>                <span class="co"># Number of permutations</span></span>
-<span id="cb12-6"><a></a>)</span>
-<span id="cb12-7"><a></a></span>
-<span id="cb12-8"><a></a><span class="co"># View results</span></span>
-<span id="cb12-9"><a></a>moran_test<span class="sc">$</span>statistic         <span class="co"># Moran's I value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test for spatial autocorrelation in errors</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>moran_test <span class="ot">&lt;-</span> <span class="fu">moran.mc</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  boston_test<span class="sc">$</span>error,        <span class="co"># Your errors</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  weights,                  <span class="co"># Spatial weights matrix</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim =</span> <span class="dv">999</span>                <span class="co"># Number of permutations</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># View results</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>moran_test<span class="sc">$</span>statistic         <span class="co"># Moran's I value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>statistic 
 0.7186593 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>moran_test<span class="sc">$</span>p.value          <span class="co"># Is it significant?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>moran_test<span class="sc">$</span>p.value          <span class="co"># Is it significant?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.001</code></pre>
 </div>
@@ -859,22 +1059,31 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li><strong>I &lt; 0</strong> → Dispersion (rare with errors)</li>
 </ul>
 </section>
-<section id="visualizing-significance" class="slide level2">
-<h2>Visualizing Significance</h2>
+<section id="visualizing-significance" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-significance">Visualizing Significance</h2>
 <p><strong>Compare observed I to random permutations:</strong></p>
-
-<img data-src="week7_slides_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section>
-<section id="what-morans-i-tells-you" class="slide level2 scrollable">
-<h2>What Moran’s I Tells You</h2>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week7_slides_files/figure-revealjs/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="what-morans-i-tells-you" class="level2">
+<h2 class="anchored" data-anchor-id="what-morans-i-tells-you">What Moran’s I Tells You</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Decision Framework</strong></p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Decision Framework
 </div>
-<div class="callout-content">
+</div>
+<div class="callout-body-container callout-body">
 <p><strong>If Moran’s I is high (errors clustered):</strong></p>
 <ol type="1">
 <li>Add more spatial features
@@ -897,16 +1106,17 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 </ol>
 </div>
 </div>
-</div>
 <p><strong>If Moran’s I ≈ 0 (random errors):</strong></p>
 <p>✅ Your model adequately captures spatial relationships!</p>
+<hr>
 </section>
-<section id="what-about-spatial-lagerror-models" class="slide level2 smaller">
-<h2>“What About Spatial Lag/Error Models?”</h2>
+<section id="what-about-spatial-lagerror-models" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="what-about-spatial-lagerror-models">“What About Spatial Lag/Error Models?”</h2>
 <p><em>“In my spatial statistics class, I learned about spatial lag and spatial error models for dealing with spatial autocorrelation. Why aren’t we using those here?”</em></p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3 id="spatial-econometrics-models"><strong>Spatial Econometrics Models</strong></h3>
+<section id="spatial-econometrics-models" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-econometrics-models"><strong>Spatial Econometrics Models</strong></h3>
 <p><strong>(Spatial Statistics Class)</strong></p>
 <p><strong>Spatial Lag Model:</strong> <span class="math inline">\(Y_i = \rho WY + \beta X_i + \varepsilon\)</span></p>
 <p><strong>Spatial Error Model:</strong> <span class="math inline">\(Y_i = \beta X_i + \lambda W\varepsilon + \xi\)</span></p>
@@ -918,8 +1128,10 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Cross-sectional analysis</li>
 </ul>
 <p><strong>When to use:</strong> Academic research on spillover effects, peer influence, regional economics</p>
+</section>
 </div><div class="column" style="width:50%;">
-<h3 id="predictive-spatial-features"><strong>Predictive Spatial Features</strong></h3>
+<section id="predictive-spatial-features" class="level3">
+<h3 class="anchored" data-anchor-id="predictive-spatial-features"><strong>Predictive Spatial Features</strong></h3>
 <p><strong>(This Class)</strong></p>
 <p><strong>Our Approach:</strong> <span class="math display">\[Y_i = \beta_0 + \beta_1 X_i + \beta_2(\text{crimes}_{500ft}) + \beta_3(\text{dist}_{downtown}) + \varepsilon_i\]</span></p>
 <p><strong>Purpose:</strong></p>
@@ -931,13 +1143,17 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Generalization to new areas</li>
 </ul>
 <p><strong>When to use:</strong> Real estate prediction, housing market forecasting, policy planning</p>
-</div></div>
 </section>
-<section id="why-not-spatial-lag-models-for-prediction" class="slide level2 smaller">
-<h2>Why Not Spatial Lag Models for Prediction?</h2>
+</div>
+</div>
+<hr>
+</section>
+<section id="why-not-spatial-lag-models-for-prediction" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="why-not-spatial-lag-models-for-prediction">Why Not Spatial Lag Models for Prediction?</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3 id="the-problems-with-spatial-lag-for-prediction"><strong>The Problems with Spatial Lag for Prediction:</strong></h3>
+<section id="the-problems-with-spatial-lag-for-prediction" class="level3">
+<h3 class="anchored" data-anchor-id="the-problems-with-spatial-lag-for-prediction"><strong>The Problems with Spatial Lag for Prediction:</strong></h3>
 <p><strong>1. Simultaneity Problem</strong></p>
 <ul>
 <li>Including <span class="math inline">\(WY\)</span> (neighbor prices) creates circular logic</li>
@@ -956,10 +1172,12 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Spatial lag “leaks” information from test set</li>
 <li>Artificially good performance that won’t hold</li>
 </ul>
+</section>
 </div><div class="column" style="width:50%;">
-<h3 id="our-solution-spatial-features-of-x-not-y"><strong>Our Solution: Spatial Features of X (Not Y)</strong></h3>
+<section id="our-solution-spatial-features-of-x-not-y" class="level3">
+<h3 class="anchored" data-anchor-id="our-solution-spatial-features-of-x-not-y"><strong>Our Solution: Spatial Features of X (Not Y)</strong></h3>
 <p>Instead of modeling dependence in <strong>Y</strong> (prices), model proximity in <strong>X</strong> (predictors)</p>
-<table class="caption-top">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>❌ Spatial Lag</th>
@@ -990,27 +1208,31 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 ✅ <strong>Try neighborhood fixed effects</strong><br>
 ✅ <strong>Use spatial cross-validation</strong></p>
 <p>❌ Don’t add spatial lag of Y for prediction purposes</p>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong><strong>The Bottom Line</strong></strong></p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span><strong>The Bottom Line</strong>
 </div>
-<div class="callout-content">
+</div>
+<div class="callout-body-container callout-body">
 <p>Both approaches are valid for different goals! Match method to purpose: <strong>inference</strong> → spatial lag/error models; <strong>prediction</strong> → spatial features.</p>
 </div>
 </div>
-</div>
-</div></div>
 </section>
-<section id="quick-clarification-biased-vs.-inconsistent" class="slide level2 smaller">
-<h2>Quick Clarification: Biased vs.&nbsp;Inconsistent</h2>
+</div>
+</div>
+<hr>
+</section>
+<section id="quick-clarification-biased-vs.-inconsistent" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="quick-clarification-biased-vs.-inconsistent">Quick Clarification: Biased vs.&nbsp;Inconsistent</h2>
 <p>When we say OLS estimates are <strong>“biased and inconsistent”</strong> with spatial lag models, what does that mean?</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3 id="biased-estimator"><strong>Biased Estimator</strong></h3>
+<section id="biased-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="biased-estimator"><strong>Biased Estimator</strong></h3>
 <p><strong>Definition:</strong> Expected value ≠ true parameter</p>
 <p><span class="math display">\[E[\hat{\beta}] \neq \beta\]</span></p>
 <p><strong>What this means:</strong></p>
@@ -1025,8 +1247,10 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Your estimates average to: 80</li>
 <li>You’re systematically <strong>20 units off</strong></li>
 </ul>
+</section>
 </div><div class="column" style="width:50%;">
-<h3 id="inconsistent-estimator"><strong>Inconsistent Estimator</strong></h3>
+<section id="inconsistent-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="inconsistent-estimator"><strong>Inconsistent Estimator</strong></h3>
 <p><strong>Definition:</strong> Doesn’t converge to true value as n → ∞</p>
 <p><span class="math display">\[\hat{\beta} \not\to \beta \text{ as } n \to \infty\]</span></p>
 <p><strong>What this means:</strong></p>
@@ -1036,18 +1260,16 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Violates a fundamental property of good estimators</li>
 </ul>
 <p><strong>Example:</strong> - n = 100 → estimate = 80 - n = 10,000 → estimate = 82 - n = 1,000,000 → estimate = 84 - Never reaches true value of 100</p>
-</div></div>
 </section>
-<section class="slide level2">
-
-</section></section>
-<section>
-<section id="summary-next-steps" class="title-slide slide level1 center">
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="summary-next-steps" class="level1">
 <h1>Summary &amp; Next Steps</h1>
-
-</section>
-<section id="key-takeaways" class="slide level2">
-<h2>Key Takeaways</h2>
+<section id="key-takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="key-takeaways">Key Takeaways</h2>
 <p><strong>Spatial autocorrelation in errors indicates model misspecification</strong></p>
 <p><strong>Moran’s I is a diagnostic tool:</strong></p>
 <ul>
@@ -1060,15 +1282,14 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Document what you try!</li>
 </ul>
 </section>
-<section id="resources" class="slide level2">
-<h2>Resources</h2>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
 <p><strong>Spatial autocorrelation:</strong> - <a href="https://mgimond.github.io/Spatial/spatial-autocorrelation.html">https://mgimond.github.io/Spatial/spatial-autocorrelation.html</a></p>
 <p><strong>spdep package:</strong> - <a href="https://r-spatial.github.io/spdep/">https://r-spatial.github.io/spdep/</a></p>
+<hr>
 </section>
-<section class="slide level2">
-
-</section></section>
-<section id="questions-before-work-time" class="title-slide slide level1 center">
+</section>
+<section id="questions-before-work-time" class="level1">
 <h1>Questions Before Work Time?</h1>
 <p>Come see me during the work session for:</p>
 <ul>
@@ -1080,467 +1301,487 @@ F-statistic: 224.1 on 1 and 1483 DF,  p-value: &lt; 2.2e-16</code></pre>
 
 
 </section>
-    </div>
-  <div class="quarto-auto-generated-content" style="display: none;">
-<div class="footer footer-default">
 
-</div>
-</div></div>
+</main> <!-- /main -->
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="../../../../site_libs/revealjs/dist/reveal.js"></script>
-  <!-- reveal.js plugins -->
-  <script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
-  
 
-  <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/math/math.js"></script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+<script>
 
-  <script>
+  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
 
-      // Full list of configuration options available at:
-      // https://revealjs.com/config/
-      Reveal.initialize({
-'controlsAuto': true,
-'previewLinksAuto': false,
-'pdfSeparateFragments': false,
-'autoAnimateEasing': "ease",
-'autoAnimateDuration': 1,
-'autoAnimateUnmatched': true,
-'jumpToSlide': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'chalkboard': {"buttons":true},
-'smaller': true,
- 
-        // Display controls in the bottom right corner
-        controls: false,
+  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
 
-        // Help the user learn the controls by providing hints, for example by
-        // bouncing the down arrow when they first encounter a vertical slide
-        controlsTutorial: false,
+  // slide changes (different for each slide format).
 
-        // Determines where controls appear, "edges" or "bottom-right"
-        controlsLayout: 'edges',
+  (function () {
 
-        // Visibility rule for backwards navigation arrows; "faded", "hidden"
-        // or "visible"
-        controlsBackArrows: 'faded',
+    // dispatch for htmlwidgets
 
-        // Display a presentation progress bar
-        progress: true,
+    function fireSlideEnter() {
 
-        // Display the page number of the current slide
-        slideNumber: 'c/t',
+      const event = window.document.createEvent("Event");
 
-        // 'all', 'print', or 'speaker'
-        showSlideNumber: 'all',
+      event.initEvent("slideenter", true, true);
 
-        // Add the current slide number to the URL hash so that reloading the
-        // page/copying the URL will return you to the same slide
-        hash: true,
+      window.document.dispatchEvent(event);
 
-        // Start with 1 for the hash rather than 0
-        hashOneBasedIndex: false,
+    }
 
-        // Flags if we should monitor the hash and change slides accordingly
-        respondToHashChanges: true,
 
-        // Push each slide change to the browser history
-        history: true,
 
-        // Enable keyboard shortcuts for navigation
-        keyboard: true,
+    function fireSlideChanged(previousSlide, currentSlide) {
 
-        // Enable the slide overview mode
-        overview: true,
+      fireSlideEnter();
 
-        // Disables the default reveal.js slide layout (scaling and centering)
-        // so that you can use custom CSS layout
-        disableLayout: false,
 
-        // Vertical centering of slides
-        center: false,
 
-        // Enables touch navigation on devices with touch input
-        touch: true,
+      // dispatch for shiny
 
-        // Loop the presentation
-        loop: false,
+      if (window.jQuery) {
 
-        // Change the presentation direction to be RTL
-        rtl: false,
+        if (previousSlide) {
 
-        // see https://revealjs.com/vertical-slides/#navigation-mode
-        navigationMode: 'linear',
+          window.jQuery(previousSlide).trigger("hidden");
 
-        // Randomizes the order of slides each time the presentation loads
-        shuffle: false,
+        }
 
-        // Turns fragments on and off globally
-        fragments: true,
+        if (currentSlide) {
 
-        // Flags whether to include the current fragment in the URL,
-        // so that reloading brings you to the same fragment position
-        fragmentInURL: false,
+          window.jQuery(currentSlide).trigger("shown");
 
-        // Flags if the presentation is running in an embedded mode,
-        // i.e. contained within a limited portion of the screen
-        embedded: false,
+        }
 
-        // Flags if we should show a help overlay when the questionmark
-        // key is pressed
-        help: true,
+      }
 
-        // Flags if it should be possible to pause the presentation (blackout)
-        pause: true,
+    }
 
-        // Flags if speaker notes should be visible to all viewers
-        showNotes: false,
 
-        // Global override for autoplaying embedded media (null/true/false)
-        autoPlayMedia: null,
 
-        // Global override for preloading lazy-loaded iframes (null/true/false)
-        preloadIframes: null,
+    // hookup for slidy
 
-        // Number of milliseconds between automatically proceeding to the
-        // next slide, disabled when set to 0, this value can be overwritten
-        // by using a data-autoslide attribute on your slides
-        autoSlide: 0,
+    if (window.w3c_slidy) {
 
-        // Stop auto-sliding after user input
-        autoSlideStoppable: true,
+      window.w3c_slidy.add_observer(function (slide_num) {
 
-        // Use this method for navigation when auto-sliding
-        autoSlideMethod: null,
+        // slide_num starts at position 1
 
-        // Specify the average time in seconds that you think you will spend
-        // presenting each slide. This is used to show a pacing timer in the
-        // speaker view
-        defaultTiming: null,
+        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
 
-        // Enable slide navigation via mouse wheel
-        mouseWheel: false,
-
-        // The display mode that will be used to show slides
-        display: 'block',
-
-        // Hide cursor if inactive
-        hideInactiveCursor: true,
-
-        // Time before the cursor is hidden (in ms)
-        hideCursorTime: 5000,
-
-        // Opens links in an iframe preview overlay
-        previewLinks: false,
-
-        // Transition style (none/fade/slide/convex/concave/zoom)
-        transition: 'none',
-
-        // Transition speed (default/fast/slow)
-        transitionSpeed: 'default',
-
-        // Transition style for full page slide backgrounds
-        // (none/fade/slide/convex/concave/zoom)
-        backgroundTransition: 'none',
-
-        // Number of slides away from the current that are visible
-        viewDistance: 3,
-
-        // Number of slides away from the current that are visible on mobile
-        // devices. It is advisable to set this to a lower number than
-        // viewDistance in order to save resources.
-        mobileViewDistance: 2,
-
-        // The "normal" size of the presentation, aspect ratio will be preserved
-        // when the presentation is scaled to fit different resolutions. Can be
-        // specified using percentage units.
-        width: 1050,
-
-        height: 700,
-
-        // Factor of the display size that should remain empty around the content
-        margin: 0.1,
-
-        math: {
-          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
-          config: 'TeX-AMS_HTML-full',
-          tex2jax: {
-            inlineMath: [['\\(','\\)']],
-            displayMath: [['\\[','\\]']],
-            balanceBraces: true,
-            processEscapes: false,
-            processRefs: true,
-            processEnvironments: true,
-            preview: 'TeX',
-            skipTags: ['script','noscript','style','textarea','pre','code'],
-            ignoreClass: 'tex2jax_ignore',
-            processClass: 'tex2jax_process'
-          },
-        },
-
-        // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
-
-          RevealMath,
-          RevealNotes,
-          RevealSearch,
-          RevealZoom
-        ]
       });
-    </script>
-    
 
-    <script>
+    }
 
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
 
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
 
-      // slide changes (different for each slide format).
+  })();
 
-      (function () {
+</script>
 
-        // dispatch for htmlwidgets
 
-        function fireSlideEnter() {
 
-          const event = window.document.createEvent("Event");
-
-          event.initEvent("slideenter", true, true);
-
-          window.document.dispatchEvent(event);
-
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
-
-    
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-
-          fireSlideEnter();
-
-    
-
-          // dispatch for shiny
-
-          if (window.jQuery) {
-
-            if (previousSlide) {
-
-              window.jQuery(previousSlide).trigger("hidden");
-
-            }
-
-            if (currentSlide) {
-
-              window.jQuery(currentSlide).trigger("shown");
-
-            }
-
-          }
-
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
         }
-
-    
-
-        // hookup for slidy
-
-        if (window.w3c_slidy) {
-
-          window.w3c_slidy.add_observer(function (slide_num) {
-
-            // slide_num starts at position 1
-
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-
-          });
-
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-
-    
-
-      })();
-
-    </script>
-
-    
-
-    <script id="quarto-html-after-body" type="application/javascript">
-      window.document.addEventListener("DOMContentLoaded", function (event) {
-        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
-        tabsets.forEach(function(tabset) {
-          const tabby = new Tabby('#' + tabset.id);
-        });
-        const isCodeAnnotation = (el) => {
-          for (const clz of el.classList) {
-            if (clz.startsWith('code-annotation-')) {                     
-              return true;
-            }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
           }
-          return false;
         }
-        const onCopySuccess = function(e) {
-          // button target
-          const button = e.trigger;
-          // don't keep focus
-          button.blur();
-          // flash "checked"
-          button.classList.add('code-copy-button-checked');
-          var currentTitle = button.getAttribute("title");
-          button.setAttribute("title", "Copied!");
-          let tooltip;
-          if (window.bootstrap) {
-            button.setAttribute("data-bs-toggle", "tooltip");
-            button.setAttribute("data-bs-placement", "left");
-            button.setAttribute("data-bs-title", "Copied!");
-            tooltip = new bootstrap.Tooltip(button, 
-              { trigger: "manual", 
-                customClass: "code-copy-button-tooltip",
-                offset: [0, -8]});
-            tooltip.show();    
-          }
-          setTimeout(function() {
-            if (tooltip) {
-              tooltip.hide();
-              button.removeAttribute("data-bs-title");
-              button.removeAttribute("data-bs-toggle");
-              button.removeAttribute("data-bs-placement");
-            }
-            button.setAttribute("title", currentTitle);
-            button.classList.remove('code-copy-button-checked');
-          }, 1000);
-          // clear code selection
-          e.clearSelection();
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
         }
-        const getTextToCopy = function(trigger) {
-          const outerScaffold = trigger.parentElement.cloneNode(true);
-          const codeEl = outerScaffold.querySelector('code');
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
           }
-          return codeEl.innerText;
         }
-        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-          text: getTextToCopy
-        });
-        clipboard.on('success', onCopySuccess);
-        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-            text: getTextToCopy,
-            container: window.document.getElementById('quarto-embedded-source-code-modal')
-          });
-          clipboardModal.on('success', onCopySuccess);
-        }
-          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-          var mailtoRegex = new RegExp(/^mailto:/);
-            var filterRegex = new RegExp('/' + window.location.host + '/');
-          var isInternal = (href) => {
-              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-          }
-          // Inspect non-navigation links and adorn them if external
-         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-          for (var i=0; i<links.length; i++) {
-            const link = links[i];
-            if (!isInternal(link.href)) {
-              // undo the damage that might have been done by quarto-nav.js in the case of
-              // links that we want to consider external
-              if (link.dataset.originalHref !== undefined) {
-                link.href = link.dataset.originalHref;
-              }
-            }
-          }
-        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-          const config = {
-            allowHTML: true,
-            maxWidth: 500,
-            delay: 100,
-            arrow: false,
-            appendTo: function(el) {
-                return el.closest('section.slide') || el.parentElement;
-            },
-            interactive: true,
-            interactiveBorder: 10,
-            theme: 'light-border',
-            placement: 'bottom-start',
-          };
-          if (contentFn) {
-            config.content = contentFn;
-          }
-          if (onTriggerFn) {
-            config.onTrigger = onTriggerFn;
-          }
-          if (onUntriggerFn) {
-            config.onUntrigger = onUntriggerFn;
-          }
-            config['offset'] = [0,0];
-            config['maxWidth'] = 700;
-          window.tippy(el, config); 
-        }
-        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-        for (var i=0; i<noterefs.length; i++) {
-          const ref = noterefs[i];
-          tippyHover(ref, function() {
-            // use id or data attribute instead here
-            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-            try { href = new URL(href).hash; } catch {}
-            const id = href.replace(/^#\/?/, "");
-            const note = window.document.getElementById(id);
-            if (note) {
-              return note.innerHTML;
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
             } else {
-              return "";
+              container.appendChild(child.cloneNode(true));
+              break;
             }
-          });
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
         }
-        const findCites = (el) => {
-          const parentEl = el.parentElement;
-          if (parentEl) {
-            const cites = parentEl.dataset.cites;
-            if (cites) {
-              return {
-                el,
-                cites: cites.split(' ')
-              };
-            } else {
-              return findCites(el.parentElement)
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
             }
           } else {
-            return undefined;
-          }
-        };
-        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-        for (var i=0; i<bibliorefs.length; i++) {
-          const ref = bibliorefs[i];
-          const citeInfo = findCites(ref);
-          if (citeInfo) {
-            tippyHover(citeInfo.el, function() {
-              var popup = window.document.createElement('div');
-              citeInfo.cites.forEach(function(cite) {
-                var citeDiv = window.document.createElement('div');
-                citeDiv.classList.add('hanging-indent');
-                citeDiv.classList.add('csl-entry');
-                var biblioDiv = window.document.getElementById('ref-' + cite);
-                if (biblioDiv) {
-                  citeDiv.innerHTML = biblioDiv.innerHTML;
-                }
-                popup.appendChild(citeDiv);
-              });
-              return popup.innerHTML;
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
             });
           }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
         }
+      }, function(instance) {
       });
-      </script>
-    
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
 
 </body></html>
