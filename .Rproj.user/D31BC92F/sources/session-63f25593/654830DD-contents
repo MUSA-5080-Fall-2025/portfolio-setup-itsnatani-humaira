@@ -2334,54 +2334,95 @@ Based on your error analysis, add 2-3 NEW features to improve the model:
 - Does this improve model fit?
 
 #Add perfect biking weather and poximity to park as potential features
+
+##Add proximity to park
 ```{r}
 library(sf)
 library(dplyr)
 
-# 1. Perfect Biking Weather indicator
-train2024 <- train2024 %>%
+# Convert stations to sf
+stations_sf <- study_panel_complete2024 %>%
+  distinct(start_station, start_lon.x, start_lat.x) %>%
+  # Remove rows with missing coordinates
+  filter(!is.na(start_lon.x) & !is.na(start_lat.x)) %>%
+  st_as_sf(coords = c("start_lon.x", "start_lat.x"), crs = 4326)
+           
+# Convert stations to sf
+stations_sf <- study_panel_complete2024 %>%
+  distinct(start_station, start_lon.x, start_lat.x) %>%
+  filter(!is.na(start_lon.x) & !is.na(start_lat.x)) %>%
+  st_as_sf(coords = c("start_lon.x", "start_lat.x"), crs = 4326)
+
+# Load parks
+PARKS_URL <- "https://hub.arcgis.com/api/v3/datasets/d52445160ab14380a673e5849203eb64_0/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1"
+parks <- st_read(PARKS_URL) %>%
+  st_transform(crs = 4326) %>%
+  st_make_valid()
+
+# Compute distance from each station to nearest park
+# Use st_distance with st_union(parks) for nearest distance
+stations_sf <- stations_sf %>%
+  rowwise() %>%
+  mutate(dist_to_park_m = min(st_distance(geometry, st_union(parks)))) %>%
+  ungroup() %>%
+  mutate(dist_to_park_m = as.numeric(dist_to_park_m))  # convert units to numeric
+
+# Join back to panel
+study_panel_complete2024 <- study_panel_complete2024 %>%
+  left_join(
+    stations_sf %>% st_drop_geometry() %>% select(start_station, dist_to_park_m),
+    by = "start_station"
+  )
+
+# Binary indicator for within 1 mile (~1609 meters)
+study_panel_complete2024 <- study_panel_complete2024 %>%
+  mutate(near_park = ifelse(dist_to_park_m <= 1609, 1, 0))
+
+```
+
+#Add perfect biking weather indicator
+```{r}
+study_panel_complete2024 <- study_panel_complete2024 %>%
   mutate(
     PerfectBikeWeather = ifelse(
       Temperature >= 60 & Temperature <= 75 & Precipitation == 0,
       1, 0
     )
   )
+```
 
-# 2. Load park data and keep polygons only
-PARKS_URL <- "https://hub.arcgis.com/api/v3/datasets/d52445160ab14380a673e5849203eb64_0/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1"
+#Train/Test split
+```{r}
+train2024 <- study_panel_complete2024 %>% filter(week < 37)
+test2024  <- study_panel_complete2024 %>% filter(week >= 37)
+```
 
-parks <- read_sf(PARKS_URL) %>%
-  filter(st_geometry_type(.) %in% c("POLYGON","MULTIPOLYGON")) %>%
-  st_make_valid() %>%
-  st_transform(st_crs(train2024)) %>%
-  filter(!st_is_empty(geometry))
-
-# 3. Ensure train data geometry is valid and in same CRS
-train2024 <- train2024 %>%
-  st_transform(st_crs(parks)) %>%
-  st_make_valid()
-
-# 4. Compute nearest park distance
-nn_idx <- st_nearest_feature(train2024, parks)
-nearest_parks <- parks[nn_idx, ]
-dist_vec <- st_distance(train2024, nearest_parks, by_element = TRUE)
-
-# Convert to miles (or feet if you prefer)
-dist_park_mi <- as.numeric(dist_vec) * 0.000621371  # meters -> miles
-
-# Optional: create a binary indicator for proximity within 10 miles
-train2024 <- train2024 %>%
-  mutate(
-    dist_park_mi = dist_park_mi,
-    Park_Within10mi = ifelse(dist_park_mi <= 10, 1, 0)
-  )
-
-# 5. Fit the model including perfect bike weather and park proximity
-model_b <- lm(
-  Trip_Count ~ as.factor(hour) + dotw_simple + Temperature + Precipitation +
-    lag1Hour + lag3Hours + lag1day + PerfectBikeWeather + dist_park_mi,
+#Updated model
+```{r}
+# Model B with new features
+model_b_plus <- lm(
+  Trip_Count ~ as.factor(hour) + dotw + Temperature + Precipitation +
+    lag1Hour + lag3Hours + lag1day +
+    PerfectBikeWeather,
   data = train2024
 )
+
+# Predict on test set
+test2024 <- test2024 %>%
+  mutate(pred2_plus = predict(model_b_plus, newdata = test2024))
+```
+
+#Compare MAE: pred2 vs pred2_plus
+```{r}
+mae_comparison <- data.frame(
+  Model = c("Model B (pred2)", "Model B + New Features (pred2_plus)"),
+  MAE = c(
+    mean(abs(test2024$Trip_Count - test2024$pred2), na.rm = TRUE),
+    mean(abs(test2024$Trip_Count - test2024$pred2_plus), na.rm = TRUE)
+  )
+)
+
+kable(mae_comparison, digits = 2, caption = "MAE Comparison: Baseline vs New Features")
 ```
 
 

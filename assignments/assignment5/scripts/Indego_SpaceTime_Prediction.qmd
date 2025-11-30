@@ -2334,64 +2334,95 @@ Based on your error analysis, add 2-3 NEW features to improve the model:
 - Does this improve model fit?
 
 #Add perfect biking weather and poximity to park as potential features
+
+##Add proximity to park
 ```{r}
-# Create Perfect Biking Weather indicator
-train2024$PerfectBikeWeather <- ifelse(
-  train2024$Temperature >= 60 & train2024$Temperature <= 75 & train2024$Precipitation == 0,
-  1, 0
-)
+library(sf)
+library(dplyr)
 
-#Load park data
-PARKS_URL   <- "https://hub.arcgis.com/api/v3/datasets/d52445160ab14380a673e5849203eb64_0/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1"
-parks_raw  <- read_sf(PARKS_URL)
+# Convert stations to sf
+stations_sf <- study_panel_complete2024 %>%
+  distinct(start_station, start_lon.x, start_lat.x) %>%
+  # Remove rows with missing coordinates
+  filter(!is.na(start_lon.x) & !is.na(start_lat.x)) %>%
+  st_as_sf(coords = c("start_lon.x", "start_lat.x"), crs = 4326)
+           
+# Convert stations to sf
+stations_sf <- study_panel_complete2024 %>%
+  distinct(start_station, start_lon.x, start_lat.x) %>%
+  filter(!is.na(start_lon.x) & !is.na(start_lat.x)) %>%
+  st_as_sf(coords = c("start_lon.x", "start_lat.x"), crs = 4326)
 
-# only polygon parks
-is_poly <- st_geometry_type(parks_raw) %in% c("POLYGON","MULTIPOLYGON")
-parks <- parks_raw[is_poly, ] %>%
-  st_make_valid() %>%
-  st_transform(CRS_TARGET) %>%
-  filter(!st_is_empty(geometry))
-
-train2024 <- train2024 %>%
-  st_transform(CRS_TARGET) %>%
+# Load parks
+PARKS_URL <- "https://hub.arcgis.com/api/v3/datasets/d52445160ab14380a673e5849203eb64_0/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1"
+parks <- st_read(PARKS_URL) %>%
+  st_transform(crs = 4326) %>%
   st_make_valid()
 
-nn_idx <- st_nearest_feature(train2024, parks)
-nearest_parks <- parks[nn_idx, ]
-dist_vec <- st_distance(train2024, nearest_parks, by_element = TRUE)
+# Compute distance from each station to nearest park
+# Use st_distance with st_union(parks) for nearest distance
+stations_sf <- stations_sf %>%
+  rowwise() %>%
+  mutate(dist_to_park_m = min(st_distance(geometry, st_union(parks)))) %>%
+  ungroup() %>%
+  mutate(dist_to_park_m = as.numeric(dist_to_park_m))  # convert units to numeric
 
-units_gdal <- tryCatch(st_crs(CRS_TARGET)$units_gdal, error = function(e) NA_character_)
-dist_park_ft <- to_feet(dist_vec, units_gdal)
-dist_park_mi <- to_miles(dist_vec, units_gdal)
+# Join back to panel
+study_panel_complete2024 <- study_panel_complete2024 %>%
+  left_join(
+    stations_sf %>% st_drop_geometry() %>% select(start_station, dist_to_park_m),
+    by = "start_station"
+  )
 
-cand <- c("park_name","name","NAME","asset_name","ASSET_NAME",
-          "site_name","SITE_NAME","prop_name","PROP_NAME")
-hit  <- intersect(cand, names(parks))
-park_col <- if (length(hit) >= 1) hit[1] else NA_character_
+# Binary indicator for within 1 mile (~1609 meters)
+study_panel_complete2024 <- study_panel_complete2024 %>%
+  mutate(near_park = ifelse(dist_to_park_m <= 1609, 1, 0))
 
-nearest_tbl <- st_drop_geometry(nearest_parks) %>%
+```
+
+#Add perfect biking weather indicator
+```{r}
+study_panel_complete2024 <- study_panel_complete2024 %>%
   mutate(
-    prop_id      = train2024$prop_id,
-    dist_park_ft = dist_park_ft,
-    dist_park_mi = dist_park_mi
-  ) %>%
-  { if (!is.na(park_col)) {
-      select(., prop_id, dist_park_ft, dist_park_mi,
-             nearest_park = !!sym(park_col))
-    } else {
-      select(., prop_id, dist_park_ft, dist_park_mi)
-    }
-  }
+    PerfectBikeWeather = ifelse(
+      Temperature >= 60 & Temperature <= 75 & Precipitation == 0,
+      1, 0
+    )
+  )
+```
 
-train2024 <- train2024 %>%
-  left_join(nearest_tbl, by = "prop_id")
+#Train/Test split
+```{r}
+train2024 <- study_panel_complete2024 %>% filter(week < 37)
+test2024  <- study_panel_complete2024 %>% filter(week >= 37)
+```
 
-# Fit the updated model
-model_b <- lm(
-  Trip_Count ~ as.factor(hour) + dotw_simple + Temperature + Precipitation +
-    lag1Hour + lag3Hours + lag1day + PerfectBikeWeather + nearest_tbl,
+#Updated model
+```{r}
+# Model B with new features
+model_b_plus <- lm(
+  Trip_Count ~ as.factor(hour) + dotw + Temperature + Precipitation +
+    lag1Hour + lag3Hours + lag1day +
+    PerfectBikeWeather,
   data = train2024
 )
+
+# Predict on test set
+test2024 <- test2024 %>%
+  mutate(pred2_plus = predict(model_b_plus, newdata = test2024))
+```
+
+#Compare MAE: pred2 vs pred2_plus
+```{r}
+mae_comparison <- data.frame(
+  Model = c("Model B (pred2)", "Model B + New Features (pred2_plus)"),
+  MAE = c(
+    mean(abs(test2024$Trip_Count - test2024$pred2), na.rm = TRUE),
+    mean(abs(test2024$Trip_Count - test2024$pred2_plus), na.rm = TRUE)
+  )
+)
+
+kable(mae_comparison, digits = 2, caption = "MAE Comparison: Baseline vs New Features")
 ```
 
 
