@@ -1,6 +1,8 @@
-"0","# Check for missing values
-summary(study_panel2024 %>% select(Trip_Count, Temperature, Precipitation))
-"
+"0","study_panel2024 <- study_panel2024 %>%"
+"0","  left_join(weather2024_complete, by = ""interval60"")"
+"0",""
+"0","# Check for missing values"
+"0","summary(study_panel2024 %>% select(Trip_Count, Temperature, Precipitation))"
 "1",""
 "1","   Trip_Count     "
 "1","  Temperature   "

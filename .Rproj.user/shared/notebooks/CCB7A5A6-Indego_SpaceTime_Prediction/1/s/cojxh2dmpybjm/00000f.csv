@@ -1,5 +1,11 @@
-"0","summary(model_c)
-"
+"0","model_c <- lm("
+"0","  Trip_Count ~ as.factor(hour) + dotw_simple + Temperature + Precipitation +"
+"0","    lag1Hour + lag3Hours + lag1day +"
+"0","    Med_Inc.x + Percent_Taking_Transit.y + Percent_White.y,"
+"0","  data = train2024"
+"0",")"
+"0",""
+"0","summary(model_c)"
 "1","
 Call:
 "

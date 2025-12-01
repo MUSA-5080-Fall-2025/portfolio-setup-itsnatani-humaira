@@ -1,7 +1,0 @@
-"0","# How many unique hours?
-length(unique(trips_panel2024$interval60))
-"
-"1","[1]"
-"1"," 2202"
-"1","
-"
