@@ -1,0 +1,6 @@
+"0","#| label: data-cleaning"
+"0","#| message: false"
+"0","#| warning: false"
+"0",""
+"0","ridership_clean <- ridership_clean %>%"
+"0","  filter(!geoid %in% c(""42101030200"",""42101028200""))"

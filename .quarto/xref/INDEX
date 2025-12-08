@@ -109,5 +109,26 @@
   },
   "assignments/assignment5/scripts/Indego_SpaceTime_Prediction.rmd": {
     "Indego_SpaceTime_Prediction.html": "f46bc0fc"
+  },
+  "Final/slides/Midterm_slides_v3.qmd": {
+    "Midterm_slides_v3.html": "2ad863e1"
+  },
+  "Final/Final_pkg/Final_pkg/slides/Final_slides_v1.qmd": {
+    "Final_slides_v1.html": "dbf20931"
+  },
+  "Final/Final_pkg/slides/Final_slides_v1.qmd": {
+    "Final_slides_v1.html": "d55a6055"
+  },
+  "Final/Final_pkg/SEPTA_Ridership_Tracts_v7.qmd": {
+    "SEPTA_Ridership_Tracts_v7.html": "b4c86645"
+  },
+  "Final/Final/Midterm_2025.qmd": {
+    "Midterm_2025.html": "101b9fd8"
+  },
+  "Final/Final/SEPTA_Ridership_Tracts.qmd": {
+    "SEPTA_Ridership_Tracts.html": "b63b67e8"
+  },
+  "final/appendix/final_2025.qmd": {
+    "final_2025.html": "ef95f477"
   }
 }

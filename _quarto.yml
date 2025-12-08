@@ -50,6 +50,12 @@ website:
             text: "Single-Family Home Price Prediction in Philadelphia"
           - href: midterm/slides/Midterm_slides_v3.qmd
             text: "Improving Property Tax Assessments"
+      - text: Final Project
+        menu: 
+          - href: final/appendix/final_2025.qmd
+            text: "Single-Family Home Price Prediction in Philadelphia"
+          - href: final/slides/final_slides_2025.qmd
+            text: "Improving Property Tax Assessments"
 
 format:
   html:

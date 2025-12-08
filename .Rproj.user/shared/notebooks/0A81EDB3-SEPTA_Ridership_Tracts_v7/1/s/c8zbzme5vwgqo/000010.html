@@ -1,0 +1,70 @@
+<table style="width:100%;">
+<colgroup>
+<col width="29%" />
+<col width="16%" />
+<col width="9%" />
+<col width="14%" />
+<col width="11%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr>
+<th align="left">Model Spec</th>
+<th align="left">CV MAE (riders)</th>
+<th align="left">Train R²</th>
+<th align="right">Feature Count</th>
+<th align="left">Model Type</th>
+<th align="left">Feature Set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">OLS - ACS only</td>
+<td align="left">615</td>
+<td align="left">0.21</td>
+<td align="right">7</td>
+<td align="left">OLS</td>
+<td align="left">ACS only</td>
+</tr>
+<tr>
+<td align="left">OLS - ACS + Spatial</td>
+<td align="left">527</td>
+<td align="left">0.43</td>
+<td align="right">10</td>
+<td align="left">OLS</td>
+<td align="left">ACS + Spatial</td>
+</tr>
+<tr>
+<td align="left">OLS - ACS + Spatial + FE</td>
+<td align="left">532</td>
+<td align="left">0.70</td>
+<td align="right">10</td>
+<td align="left">OLS</td>
+<td align="left">ACS + Spatial + FE</td>
+</tr>
+<tr>
+<td align="left">Poisson - ACS only</td>
+<td align="left">608</td>
+<td align="left">0.26</td>
+<td align="right">7</td>
+<td align="left">Poisson</td>
+<td align="left">ACS only</td>
+</tr>
+<tr>
+<td align="left">Poisson - ACS + Spatial</td>
+<td align="left">477</td>
+<td align="left">0.58</td>
+<td align="right">10</td>
+<td align="left">Poisson</td>
+<td align="left">ACS + Spatial</td>
+</tr>
+<tr>
+<td align="left">Poisson - ACS + Spatial + FE</td>
+<td align="left">491</td>
+<td align="left">0.77</td>
+<td align="right">10</td>
+<td align="left">Poisson</td>
+<td align="left">ACS + Spatial + FE</td>
+</tr>
+</tbody>
+</table>

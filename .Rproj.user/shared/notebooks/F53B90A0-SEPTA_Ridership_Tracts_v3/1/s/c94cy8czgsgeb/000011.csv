@@ -1,0 +1,3 @@
+"0",""
+"0","# look at the top/bottom groups"
+"0","model_data %>% count(fe_bucket, sort = TRUE) %>% head()"
