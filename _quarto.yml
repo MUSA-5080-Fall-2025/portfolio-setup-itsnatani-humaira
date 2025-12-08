@@ -53,9 +53,9 @@ website:
       - text: Final Project
         menu: 
           - href: final/appendix/final_2025.qmd
-            text: "Single-Family Home Price Prediction in Philadelphia"
+            text: "SEPTA Bus Ridership Prediction in Philadelphia"
           - href: final/slides/final_slides_2025.qmd
-            text: "Improving Property Tax Assessments"
+            text: "Identifying Transit Deserts to Help Improve Equity-Focused Investments"
 
 format:
   html:
